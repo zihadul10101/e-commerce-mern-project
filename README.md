@@ -25,4 +25,6 @@ npm i --save-dev morgan
  npm i body-parser
  // server error handling error
  // client error handling error
+## How to handle HTTP errors
+npm install http-errors
 
