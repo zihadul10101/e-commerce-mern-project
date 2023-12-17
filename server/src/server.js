@@ -4,12 +4,15 @@ const app = express()
 
 
 app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended:true}));
 const port = 3000
 const isLoggedIn=(req,res,next)=>{
   // console.log("Is loggedin middlewar");
-  const login= false;
+  const login= true;
   if (login) {
-    next()
+    req.body.id=101;
+    next();
   } else {
     return res.status(401).json({
       message:"Please login first"
@@ -24,7 +27,8 @@ app.get('/test', (req, res) => {
   })
 })
 app.get('/api/user',isLoggedIn, (req, res) => {
-  console.log("user profile");
+
+  console.log(req.body.id);
   res.status(200).send({
     message:"user profile return"
   })
