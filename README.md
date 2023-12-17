@@ -17,4 +17,12 @@ npm i --save-dev morgan
 
 ## api test with postman
 ## Middleware (req,res,next)
+*Built-in middleware
+1.express.json
+2.express.urlencoded
+*Error-handling middleware
+*Third-party middleware
+ npm i body-parser
+ // server error handling error
+ // client error handling error
 
