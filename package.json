@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "express-rate-limit": "^7.1.5",
+    "xss-clean": "^0.1.4"
+  }
+}

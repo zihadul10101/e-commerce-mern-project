@@ -23,8 +23,11 @@ npm i --save-dev morgan
 *Error-handling middleware
 *Third-party middleware
  npm i body-parser
- // server error handling error
- // client error handling error
+  1.server error handling error
+  2.client error handling error
 ## How to handle HTTP errors
 npm install http-errors
 
+## How to secure API -> xss-clean , express-rate-limit
+npm i xss-clean
+npm i express-rate-limit
