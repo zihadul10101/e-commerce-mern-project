@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const morgan = require('morgan');
 const xssClean = require('xss-clean');
 const rateLimit= require("express-rate-limit");
+const { userRouter } = require('./routers/userRouter');
 
 
 const app = express()
@@ -23,7 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
 // app.use(express.json());
 // app.use(express.urlencoded({ extended:true}));
-
+app.use('/api/user',userRouter);
 
 const isLoggedIn=(req,res,next)=>{
   // console.log("Is loggedin middlewar");
@@ -43,14 +44,8 @@ app.get('/test', (req, res) => {
   res.status(200).send({
     message:"get:Apping tsteing successfully"
   })
-})
-app.get('/api/user',isLoggedIn, (req, res) => {
+});
 
-  console.log(req.body.id);
-  res.status(200).send({
-    message:"user profile return"
-  })
-})
 // client error handling error
 app.use(( req, res, next) => {
 

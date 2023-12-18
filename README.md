@@ -4,7 +4,7 @@ node install,
 ## Express server setup
 npm init -y
 npm i express
-## HTTP response
+## HTTP request and  response
 ## Nodemon and morgan package
 npm i --save-dev nodemon
 chang packaje.jeson
@@ -31,3 +31,10 @@ npm install http-errors
 ## How to secure API -> xss-clean , express-rate-limit
 npm i xss-clean
 npm i express-rate-limit
+
+##  Environment variable and .gitignore
+npm i dotenv
+
+## MVC Architecture
+modeal view controller 
+
