@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const user = require('../models/userModels');
+
 
 
   const getUsers= (req, res,next) => {
@@ -7,7 +7,7 @@ const user = require('../models/userModels');
      //console.log(req.body.id);
      res.status(200).send({
       message:"user profile return",
-      user:user
+   
     })
    } catch (error) {
      next(error); 

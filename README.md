@@ -43,3 +43,5 @@ install mongodb
 install mongodb connection
 npm install mongoose --save
 
+## Schema and Model for user
+npm i bcrypt
