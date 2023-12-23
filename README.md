@@ -38,3 +38,8 @@ npm i dotenv
 ## MVC Architecture
 modeal view controller 
 
+## DataBase connection mongodb
+install mongodb
+install mongodb connection
+npm install mongoose --save
+
