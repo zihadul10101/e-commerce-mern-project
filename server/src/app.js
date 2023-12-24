@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const xssClean = require('xss-clean');
 const rateLimit= require("express-rate-limit");
 const { userRouter } = require('./routers/userRouter');
+const { seedRouter } = require('./routers/seedRouter');
 
 
 const app = express()
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded({ extended:true}));
 // app.use(express.json());
 // app.use(express.urlencoded({ extended:true}));
 app.use('/api/user',userRouter);
+app.use('/api/seed',seedRouter);
 
 const isLoggedIn=(req,res,next)=>{
   // console.log("Is loggedin middlewar");
