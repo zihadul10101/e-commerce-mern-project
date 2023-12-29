@@ -1,14 +1,14 @@
 const createHttpError = require("http-errors");
 const User = require("../models/userModels");
 
-const findUserById = async(id)=>{
+const findWithId = async(id,options={})=>{
    try {
-    const options={password:0};
-    const user=await User.findById(id,options)
-    if(!user){
-     throw createHttpError(404,"User does not exect with this id");
+
+    const item=await User.findById(id,options)
+    if(!item){
+     throw createHttpError(404,"Item does not exect with this id");
     } 
-    return user;
+    return item;
    } catch (error) {
     if(error instanceof mongoose.Error){
        throw (createError(400,"Invalide User Id"))
@@ -18,4 +18,4 @@ const findUserById = async(id)=>{
    }
 }
 
-module.exports={findUserById}
+module.exports={findWithId}
