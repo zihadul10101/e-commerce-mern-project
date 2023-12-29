@@ -52,5 +52,6 @@ npm i bcrypt
 ## GET /api/user/:id -> get a single user by id
 ## How to create services in the backend
 ## Delete/api/user/:id -> delete a single user by id
+## Refoctor and reuability , dynamic
 
 
