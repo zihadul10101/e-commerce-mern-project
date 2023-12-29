@@ -45,10 +45,11 @@ npm install mongoose --save
 
 ## Schema and Model for user
 npm i bcrypt
-
 ## Create a Seed route for user
 
 ## GET/api/users -> isAdmin-> getAllUsers ->SearchByName -> pagination functionality
 ## response Handler controller for error or success 
 ## GET /api/user/:id -> get a single user by id
+## How to create services in the backend
+
 
