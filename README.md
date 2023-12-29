@@ -46,8 +46,8 @@ npm install mongoose --save
 ## Schema and Model for user
 npm i bcrypt
 
-## Create a Seed route fot user
+## Create a Seed route for user
 
 ## GET/api/users -> isAdmin-> getAllUsers ->SearchByName -> pagination functionality
-
+## response Handler controller for error or success 
 
