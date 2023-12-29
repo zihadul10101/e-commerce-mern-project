@@ -1,10 +1,11 @@
 const createError = require('http-errors');
 const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
+const  mongoose  = require('mongoose');
 
 
 
-  const getUsers=async (req, res,next) => {
+const getUsers=async (req, res,next) => {
    try {
     const search = req.query.search || "";
     const page = Number(req.query.page) || 1;
@@ -51,5 +52,31 @@ const { successResponse } = require('./responseController');
    }
    
   }
+  // single user by find by in
+const getUser=async (req, res,next) => {
+   try {
+  
+     const id= req.params.id;
+     const options={password:0};
+     const user=await User.findById(id,options)
+     if(!user){
+      throw createError(404,"User does not exect with this id");
+     } 
+    return successResponse(res,{
+      statusCode:200,
+      message:"User were returned successfully",
+      payload:{
+        user
+      }
+      
+    })
+   } catch (error) {
+    if(error instanceof mongoose.Error){
+    next(createError(400,"Invalide User Id"))
+    }
+     next(error); 
+   }
+   
+  }
 
-  module.exports={getUsers};
+  module.exports={getUsers,getUser};

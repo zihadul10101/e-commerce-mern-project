@@ -50,4 +50,5 @@ npm i bcrypt
 
 ## GET/api/users -> isAdmin-> getAllUsers ->SearchByName -> pagination functionality
 ## response Handler controller for error or success 
+## GET /api/user/:id -> get a single user by id
 
