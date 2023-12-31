@@ -5,7 +5,7 @@ const { successResponse } = require('./responseController');
 const {  findWithId } = require('../services/findItem');
 const { deleteImage } = require('../helper/deleteImage');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
-const { jwtActivationKey } = require('../secret');
+const { jwtActivationKey, clientURL } = require('../secret');
 
 
 
@@ -104,18 +104,18 @@ const processRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
 
-    
-   
-    // const newUser={
-    //   name,
-    //   email,
-    //   password,
-    //   phone,
-    //   address
-    // };
 // create jwt
-const token = createJSONWebToken({ name, email, password, phone, address }, '', '10m');
-
+   const token = createJSONWebToken({ name, email, password, phone, address }, jwtActivationKey, '10m');
+// prepare email
+const emailData={
+  email,
+  subject:"Account Activation Email",
+  html:`
+  <h2>Hello ${name}</h2>
+  <p>Please click here to <a herf="${clientURL}/api/users/activate/${token}" target="_blank">activate your account </a></p>
+  `
+}
+// send email with nodemailer
      const userExists= await User.exists({email:email});
      if(userExists){
       throw createError(409,"User with this email already exists , please sign in");
@@ -126,7 +126,6 @@ const token = createJSONWebToken({ name, email, password, phone, address }, '', 
       message:"User was created successfully", 
       payload:{
        token
-    
       } 
     })
    } catch (error) {

@@ -56,7 +56,11 @@ npm i bcrypt
 ## Delete Image helper
 ## Post / api/user/process-register-> process the registration
 ## Create JWT -> npm i jsonwebtoken
+npm i nodemailer
+prepare smtp and prepare email
+serch => security.google.com/settings/apppassword =>appname=>website=>vxdd qgrj ckag phjc
 ## Post / api/users/verify -> verify + register into data
+
 
 
 
