@@ -59,7 +59,13 @@ npm i bcrypt
 npm i nodemailer
 prepare smtp and prepare email
 serch => security.google.com/settings/apppassword =>appname=>website=>vxdd qgrj ckag phjc
+
+npm i bcryptjs
+and uninstall npm uninstall bcrypt
+npm install nodemailer
+
 ## Post / api/users/verify -> verify + register into data
+
 
 
 

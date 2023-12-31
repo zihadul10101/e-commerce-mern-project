@@ -6,6 +6,6 @@ require('dotenv').config()
  const jwtActivationKey=process.env.jwtActivationKey || "AAAAAAAAhhhSSSSSS555$$";
 const smtpUsername=process.env.SMTP_USERNAME || "";
 const smtpPassword=process.env.SMTP_PASSWORD || "";
-const clientURL=process.env.CLIENT_URL || "";
+const clientURL=process.env.CLIENT_URL || "http://localhost:3000";
 
 module.exports={serverPort,mongodbURL,defaultImagePath,jwtActivationKey,smtpUsername,smtpPassword,clientURL};
