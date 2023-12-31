@@ -2,8 +2,8 @@ const createError = require('http-errors');
 const fs = require('fs');
 const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
-const  mongoose  = require('mongoose');
-const { findUserById, findWithId } = require('../services/findItem');
+const {  findWithId } = require('../services/findItem');
+const { deleteImage } = require('../helper/deleteImage');
 
 
 
@@ -54,7 +54,7 @@ const getUsers=async (req, res,next) => {
    }
    
   }
-  // single user by find by in
+  // single user by find by id in
 const getUserById=async (req, res,next) => {
    try {
   
@@ -82,21 +82,9 @@ const deletUserById=async (req, res,next) => {
      const id= req.params.id;
      const options={password:0};
      const user= await findWithId(User,id,options);
- 
-
-      const UserImagePath= user.image;
-      fs.access(UserImagePath,(err)=>{
-        if(err){
-          console.error("user image does not exist")
-        }else{
-          fs.unlink(UserImagePath,(err)=>{
-            if(err){
-              throw err;
-              console.log("user image deleted");
-            }
-          })
-        }
-      })
+     const userImagePath= user.image;
+     deleteImage(userImagePath);
+   
 
       await User.findByIdAndDelete({_id:id,isAdmin:false});
 
