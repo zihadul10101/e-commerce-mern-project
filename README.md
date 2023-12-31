@@ -55,6 +55,7 @@ npm i bcrypt
 ## Refoctor and reuability , dynamic
 ## Delete Image helper
 ## Post / api/user/process-register-> process the registration
+## Create JWT -> npm i jsonwebtoken
 ## Post / api/users/verify -> verify + register into data
 
 

@@ -4,6 +4,8 @@ const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
 const {  findWithId } = require('../services/findItem');
 const { deleteImage } = require('../helper/deleteImage');
+const { createJSONWebToken } = require('../helper/jsonwebtoken');
+const { jwtActivationKey } = require('../secret');
 
 
 
@@ -101,23 +103,30 @@ const deletUserById=async (req, res,next) => {
 const processRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
-    const newUser={
-      name,
-      email,
-      password,
-      phone,
-      address
-    };
+
+    
+   
+    // const newUser={
+    //   name,
+    //   email,
+    //   password,
+    //   phone,
+    //   address
+    // };
+// create jwt
+const token = createJSONWebToken({ name, email, password, phone, address }, '', '10m');
+
      const userExists= await User.exists({email:email});
      if(userExists){
       throw createError(409,"User with this email already exists , please sign in");
      }
-
+ 
       return successResponse(res,{
       statusCode:200,
       message:"User was created successfully", 
       payload:{
-        newUser
+       token
+    
       } 
     })
    } catch (error) {
