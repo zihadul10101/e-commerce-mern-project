@@ -54,6 +54,8 @@ npm i bcrypt
 ## Delete/api/user/:id -> delete a single user by id
 ## Refoctor and reuability , dynamic
 ## Delete Image helper
-## Post / api/user/:id -> create an user
+## Post / api/user/process-register-> process the registration
+## Post / api/users/verify -> verify + register into data
+
 
 

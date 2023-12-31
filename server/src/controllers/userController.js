@@ -93,10 +93,37 @@ const deletUserById=async (req, res,next) => {
       message:"User was delete successfully",  
     })
    } catch (error) {
-    
+     next(error); 
+   }
+   
+  }
+  // single user processRegister
+const processRegister=async (req, res,next) => {
+   try {
+    const {name ,email,password,phone,address} =req.body;
+    const newUser={
+      name,
+      email,
+      password,
+      phone,
+      address
+    };
+     const userExists= await User.exists({email:email});
+     if(userExists){
+      throw createError(409,"User with this email already exists , please sign in");
+     }
+
+      return successResponse(res,{
+      statusCode:200,
+      message:"User was created successfully", 
+      payload:{
+        newUser
+      } 
+    })
+   } catch (error) {
      next(error); 
    }
    
   }
 
-  module.exports={getUsers,getUserById,deletUserById};
+  module.exports={getUsers,getUserById,deletUserById,processRegister};
