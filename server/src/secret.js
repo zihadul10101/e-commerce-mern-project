@@ -7,5 +7,7 @@ require('dotenv').config()
 const smtpUsername=process.env.SMTP_USERNAME || "";
 const smtpPassword=process.env.SMTP_PASSWORD || "";
 const clientURL=process.env.CLIENT_URL || "http://localhost:3000";
+const uploadDir = process.env. UPLOAD_FILE || "../public/images/users";
 
-module.exports={serverPort,mongodbURL,defaultImagePath,jwtActivationKey,smtpUsername,smtpPassword,clientURL};
+module.exports={serverPort,mongodbURL,defaultImagePath,jwtActivationKey,
+    smtpUsername,smtpPassword,clientURL,uploadDir};

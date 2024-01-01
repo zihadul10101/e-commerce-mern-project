@@ -25,6 +25,5 @@ try {
     console.error("Error occured while sending email: ",error);
     throw error;
 };
-
 } 
 module.exports={emailWithNodeMailer}

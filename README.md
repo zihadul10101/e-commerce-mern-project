@@ -65,6 +65,7 @@ and uninstall npm uninstall bcrypt
 npm install nodemailer
 
 ## Post / api/users/verify -> verify + register into data
+## Image upload =>npm i multer
 
 
 

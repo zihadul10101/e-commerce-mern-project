@@ -10,15 +10,13 @@ const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
 
 
-
+// get all users
 const getUsers=async (req, res,next) => {
    try {
     const search = req.query.search || "";
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 3;
-
     const searchRegExp = new RegExp(".*"+ search + ".*",'i');
-
     const filter = {
       isAdmin:{$ne: true},
       $or:[
@@ -61,7 +59,6 @@ const getUsers=async (req, res,next) => {
   // single user by find by id in
 const getUserById=async (req, res,next) => {
    try {
-  
      const id= req.params.id;
      const options={password:0};
      const user= await findWithId(User,id,options);
@@ -70,27 +67,21 @@ const getUserById=async (req, res,next) => {
       message:"User were returned successfully",
       payload:{
         user
-      }
-      
+      }   
     })
    } catch (error) {
-    
      next(error); 
-   }
-   
+   } 
   }
-  // single user delet
+  // single user delete
 const deletUserById=async (req, res,next) => {
    try {
-  
      const id= req.params.id;
      const options={password:0};
      const user= await findWithId(User,id,options);
      const userImagePath= user.image;
      deleteImage(userImagePath);
-   
-
-      await User.findByIdAndDelete({_id:id,isAdmin:false});
+     await User.findByIdAndDelete({_id:id,isAdmin:false});
 
       return successResponse(res,{
       statusCode:200,
@@ -104,10 +95,10 @@ const deletUserById=async (req, res,next) => {
   // single user processRegister
 const processRegister=async (req, res,next) => {
    try {
-    const {name ,email,password,phone,address} =req.body;
+    const {name ,email,password,phone,address,image} =req.body;
 
 // create jwt
-   const token = createJSONWebToken({ name, email, password, phone, address }, jwtActivationKey, '10m');
+   const token = createJSONWebToken({ name, email, password, phone, address ,image}, jwtActivationKey, '10m');
 // prepare email
 const emailData = {
   email,
@@ -118,12 +109,9 @@ const emailData = {
     activate your account</a></p>
   `
 };
-
-
 // send email with nodemailer
-
 try {
- await emailWithNodeMailer(emailData);
+// await emailWithNodeMailer(emailData);
 } catch (emailError) {
   next(createError(500,"Failed to send verifation email"));
   return;
@@ -147,8 +135,7 @@ try {
   }
   // single user activateUserAccount
 const activateUserAccount=async (req, res,next) => {
-   try {
-   
+   try { 
   const token=req.body.token;
   if(!token){
     throw createError(404,"Token not found")
@@ -186,4 +173,4 @@ const activateUserAccount=async (req, res,next) => {
    
   }
 
-  module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount};
+module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount};

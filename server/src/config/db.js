@@ -3,7 +3,6 @@ const { mongodbURL } = require('../secret');
 
 
 
-
 const connectDatabase=async(optins={})=>{
     try {
         await mongoose.connect(mongodbURL,optins);
