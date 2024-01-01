@@ -95,10 +95,10 @@ const deletUserById=async (req, res,next) => {
   // single user processRegister
 const processRegister=async (req, res,next) => {
    try {
-    const {name ,email,password,phone,address,image} =req.body;
+    const {name ,email,password,phone,address} =req.body;
 
 // create jwt
-   const token = createJSONWebToken({ name, email, password, phone, address ,image}, jwtActivationKey, '10m');
+   const token = createJSONWebToken({ name, email, password, phone, address }, jwtActivationKey, '10m');
 // prepare email
 const emailData = {
   email,
