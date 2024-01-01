@@ -111,7 +111,7 @@ const emailData = {
 };
 // send email with nodemailer
 try {
-// await emailWithNodeMailer(emailData);
+await emailWithNodeMailer(emailData);
 } catch (emailError) {
   next(createError(500,"Failed to send verifation email"));
   return;
