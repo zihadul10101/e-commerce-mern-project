@@ -96,9 +96,15 @@ const deletUserById=async (req, res,next) => {
 const processRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
+    // console.log(req.file);
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file provided' });
+    }
+
+    //const imageBufferString = req.file.buffer.toString('base64');
 
 // create jwt
-   const token = createJSONWebToken({ name, email, password, phone, address }, jwtActivationKey, '10m');
+   const token = createJSONWebToken({ name, email, password, phone, address}, jwtActivationKey, '10m');
 // prepare email
 const emailData = {
   email,
@@ -111,7 +117,7 @@ const emailData = {
 };
 // send email with nodemailer
 try {
-await emailWithNodeMailer(emailData);
+//await emailWithNodeMailer(emailData);
 } catch (emailError) {
   next(createError(500,"Failed to send verifation email"));
   return;
@@ -125,7 +131,8 @@ await emailWithNodeMailer(emailData);
       statusCode:200,
       message:`Please go to your ${email}  for completing your registration process`, 
       payload:{
-       token
+       token,
+    
       } 
     })
    } catch (error) {
@@ -138,7 +145,7 @@ const activateUserAccount=async (req, res,next) => {
    try { 
   const token=req.body.token;
   if(!token){
-    throw createError(404,"Token not found")
+    throw createError(404,"Token not found");
   }
  try {
   const decoded=jwt.verify(token,jwtActivationKey);

@@ -29,7 +29,13 @@ const userSchema= new Schema({
     minLength:[6,"The length of user password can be minmum 6"],
     set:(v) => bcrypt.hashSync(v, bcrypt.genSaltSync(10))
    },
-   image:{
+  //  image:{
+  //   type:  Buffer,
+  //   contentType: String,
+  //   require:[true,'User image is required'],
+   
+  //  },
+  image:{
     type:  String,
 
     default: defaultImagePath || 'public/image/users/user.png'
