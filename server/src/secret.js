@@ -3,7 +3,7 @@ require('dotenv').config()
  const mongodbURL=process.env.MONGODB_ATLAS_URL || "mongodb://localhost:27017/ecommerceMernDB";
  const defaultImagePath =process.env.DEFAULT_USER_IMAGE || 'public/image/users/user.png';
  
- const jwtActivationKey=process.env.jwtActivationKey || "AAAAAAAAhhhSSSSSS555$$";
+const jwtActivationKey=process.env.jwtActivationKey || "AAAAAAAAhhhSSSSSS555$$";
 const smtpUsername=process.env.SMTP_USERNAME || "";
 const smtpPassword=process.env.SMTP_PASSWORD || "";
 const clientURL=process.env.CLIENT_URL || "http://localhost:3000";

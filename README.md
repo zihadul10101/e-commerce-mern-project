@@ -71,7 +71,8 @@ npm i multer
 ## File filtering file size and refactor
 ## add express validator middlewar
 npm i express-validator
-## Storing image as buffer
+## Storing image as buffer or string?
+## PUT/api/users/:id -> update a single user by id
 
 
 

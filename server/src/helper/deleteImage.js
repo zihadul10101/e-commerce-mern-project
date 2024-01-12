@@ -6,7 +6,8 @@ try {
     await  fs.unlink(UserImagePath)
     console.error("user image was deleted")
 } catch (error) {
-    console.log("user image does not exect")   
+    console.log("user image does not exect")  
+    throw error; 
 }
       
 }

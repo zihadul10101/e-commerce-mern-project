@@ -37,7 +37,6 @@ const userSchema= new Schema({
   //  },
   image:{
     type:  String,
-
     default: defaultImagePath || 'public/image/users/user.png'
 
    },

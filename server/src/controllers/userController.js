@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
 const {  findWithId } = require('../services/findItem');
-const { deleteImage } = require('../helper/deleteImage');
+// const { deleteImage } = require('../helper/deleteImage');
+const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
@@ -79,10 +80,12 @@ const deletUserById=async (req, res,next) => {
      const id= req.params.id;
      const options={password:0};
      const user= await findWithId(User,id,options);
-     const userImagePath= user.image;
-     deleteImage(userImagePath);
+    //  const userImagePath= user.image;
+    //  deleteImage(userImagePath);
      await User.findByIdAndDelete({_id:id,isAdmin:false});
-
+   if(user && user.image){
+     await deleteImage(user.image); 
+   }
       return successResponse(res,{
       statusCode:200,
       message:"User was delete successfully",  
@@ -97,14 +100,22 @@ const processRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
     // console.log(req.file);
-    if (!req.file) {
-      return res.status(400).json({ error: 'No file provided' });
+    const image=req.file.path;
+    // if (!image) {
+    //   throw new Error("Image File is Required");
+    // }
+    if (image && image.size>1024*1024*2) {
+      throw new Error("File too large.It must be lees then 2 MB");
     }
 
     //const imageBufferString = req.file.buffer.toString('base64');
 
 // create jwt
-   const token = createJSONWebToken({ name, email, password, phone, address}, jwtActivationKey, '10m');
+const tokenPayload={ name, email, password, phone, address};
+if(image){
+  tokenPayload.image = image;
+}
+   const token = createJSONWebToken(tokenPayload, jwtActivationKey, '10m');
 // prepare email
 const emailData = {
   email,
@@ -126,14 +137,10 @@ try {
      if(userExists){
       throw createError(409,"User with this email already exists , please sign in");
      }
- 
       return successResponse(res,{
       statusCode:200,
       message:`Please go to your ${email}  for completing your registration process`, 
-      payload:{
-       token,
-    
-      } 
+      payload: token
     })
    } catch (error) {
      next(error); 
@@ -179,5 +186,65 @@ const activateUserAccount=async (req, res,next) => {
    }
    
   }
+    // single user updated
+const updateUserById=async (req, res,next) => {
+  try {
+    const userId= req.params.id;
+    //find user
+    const options={password:0};
+    const user= await findWithId(User,userId,options);
+    const updateOptions={new:true,runValidators:true,context:'query'};
+     let updates={};
+     // name,email,password,phone,image,address
+    //  if(req.body.name){
+    //    updates.name=req.body.name;
+    //  }
+    //  if(req.body.password){
+    //    updates.password=req.body.password;
+    //  }
+    //  if(req.body.phone){
+    //    updates.phone=req.body.phone;
+    //  }
+    //  if(req.body.address){
+    //    updates.address=req.body.address;
+    //  }
+   for(let key in req.body){
+    if(['name','password','phone','address'].includes(key)){
+      updates[key]=req.body[key];
+    }
+    else if(['email'].includes(key)){
+      throw new Error("Email can't be updated.");
+    }
+   }
+     const image=req.file.path;
+    //  console.log("updated image ..."); 
+    //  console.log(image);
+    //  console.log("updated image ..."); 
+     if(image){
+      // image size max 2 mb
+      if (image.size>1024*1024*2) {
+        throw new Error("File too large.It must be lees then 2 MB");
+      }
+      updates.image = image;
+      // before image replace at this time
+      user.image != 'default.png' && deleteImage(user.image);
+     }
+ 
+  const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
+  if(!updatedUser){
+    throw new Error("User with this id does not existes");
+  }
 
-module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount};
+     return successResponse(res,{
+     statusCode:200,
+     message:"User was updated successfully",  
+     payload:updatedUser
+  
+   })
+  } catch (error) {
+    next(error); 
+  }
+  
+ }
+
+module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount,updateUserById};
