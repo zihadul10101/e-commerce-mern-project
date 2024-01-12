@@ -100,7 +100,7 @@ const processRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
     // console.log(req.file);
-    const image=req.file.path;
+    const image=req.file?.path;
     // if (!image) {
     //   throw new Error("Image File is Required");
     // }
@@ -216,7 +216,7 @@ const updateUserById=async (req, res,next) => {
       throw new Error("Email can't be updated.");
     }
    }
-     const image=req.file.path;
+     const image=req.file?.path;
     //  console.log("updated image ..."); 
     //  console.log(image);
     //  console.log("updated image ..."); 

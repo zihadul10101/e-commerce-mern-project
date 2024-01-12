@@ -8,11 +8,11 @@ const userRouter = express.Router();
 
   
 userRouter.post('/process-register',uploadUserImage.single("image"),validateUserRegistration,runValidation, processRegister );
-userRouter.post('/verify',activateUserAccount );
-userRouter.get('/',getUsers );
+userRouter.post('/activate',activateUserAccount );
+userRouter.get('/',getUsers);
 userRouter.get('/:id',getUserById );
 userRouter.delete('/:id',deletUserById );
 userRouter.put('/:id',uploadUserImage.single("image"),updateUserById);
 
 
-  module.exports={userRouter};
+module.exports={userRouter};

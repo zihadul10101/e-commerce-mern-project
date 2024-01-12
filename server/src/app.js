@@ -1,5 +1,6 @@
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const morgan = require('morgan');
 const xssClean = require('xss-clean');
@@ -7,6 +8,7 @@ const rateLimit= require("express-rate-limit");
 const { userRouter } = require('./routers/userRouter');
 const { seedRouter } = require('./routers/seedRouter');
 const { errorResponse } = require('./controllers/responseController');
+const { authRouter } = require('./routers/authRouther');
 
 
 const app = express()
@@ -19,6 +21,8 @@ const rateLimiter = rateLimit({
     message:"to many request from this ip.Please try again later"
 })
 
+
+app.use(cookieParser());
 app.use(xssClean());
 app.use(rateLimiter);
 app.use(morgan("dev"));
@@ -28,6 +32,7 @@ app.use(bodyParser.urlencoded({ extended:true}));
 // app.use(express.urlencoded({ extended:true}));
 app.use('/api/user',userRouter);
 app.use('/api/seed',seedRouter);
+app.use('/api/auth',authRouter);
 
 const isLoggedIn=(req,res,next)=>{
   // console.log("Is loggedin middlewar");

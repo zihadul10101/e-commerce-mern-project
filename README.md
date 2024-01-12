@@ -73,6 +73,16 @@ npm i multer
 npm i express-validator
 ## Storing image as buffer or string?
 ## PUT/api/users/:id -> update a single user by id
+ ***authentication and authorization *** 
+## POST/api/auth/login=> user login using JWT
+   1. email password req.body
+   2. isExist 
+   3. compare the password
+   4. is banned 
+   5. token set,cookie -> npm i cookie-parser
+## POST/api/auth/logout=> user logout 
+## Middlewares => isLoggedIn,isLoggedOut,isAdmin
+
 
 
 
