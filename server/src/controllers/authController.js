@@ -27,9 +27,9 @@ try {
     throw createError(403,"User loggedin successfully");
    }
    //token set,cookie
-   const tokenPayload={email};
+   const tokenPayload={_id:user._id};
    const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '10m');
-   res.cookie('access_token',accessToken,{
+   res.cookie('accessToken',accessToken,{
     maxAge: 15 * 60 * 1000 , //15 minute
     httpOnly:true,
     //secure:true,
@@ -47,7 +47,7 @@ try {
 }
 const handleLogout=async (req, res,next) => {
 try {
-   res.clearCookie('access_token');
+   res.clearCookie('accessToken');
    // success Response 
    return successResponse(res,{
     statusCode:200,
