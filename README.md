@@ -83,6 +83,9 @@ npm i express-validator
 ## POST/api/auth/logout=>  
 ## Middlewares => isLoggedIn,isLoggedOut,isAdmin
 ## input validation when signed ID and refactoring
+## PUT /api/users/ban-user -> ban user
+## PUT /api/users/unban-user -> unban user
+## PUT /api/users/updated-password -> updated the password
 <!-- https://cloud.mongodb.com/v2/605a21d6c01d53693cfafce4#/metrics/replicaSet/65864dfecaa0f12c16d6de98/explorer/ecommerceMernDB/users/find -->
 
 

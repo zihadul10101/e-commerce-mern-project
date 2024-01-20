@@ -1,5 +1,8 @@
 const createError = require('http-errors');
+
 const User = require("../models/userModels");
+const { deleteImage } = require('../helper/deleteImageHelper');
+const mongoose=require('mongoose');
 
 // handle get user
  const findUsers = async (search,limit,page)=>{
@@ -37,6 +40,9 @@ const User = require("../models/userModels");
          } 
          
     } catch (error) {
+        if(error instanceof mongoose.Error.CastError){
+            throw (createError(400,"Invalide User Id"));
+         }
        throw error; 
     }
  }
@@ -50,7 +56,87 @@ const User = require("../models/userModels");
  }    
      return user;    
     } catch (error) {
+        if(error instanceof mongoose.Error.CastError){
+            throw (createError(400,"Invalide User Id"));
+         }
        throw error; 
+    }
+ }
+// handle delete user by id
+ const deleteUserById = async (id,options={})=>{
+ 
+    try {
+    //  const userImagePath= user.image;
+    //  deleteImage(userImagePath);
+  const user=  await User.findByIdAndDelete({_id:id,isAdmin:false});
+    if(user && user.image){
+      await deleteImage(user.image); 
+    }   
+     
+    } catch (error) {
+        if(error instanceof mongoose.Error.CastError){
+            throw (createError(400,"Invalide User Id"));
+         }
+       throw error; 
+    }
+ }
+// handle updated user by id
+ const updateUserById = async (userId,req)=>{
+ 
+    try {
+        const options={password:0};
+        const user= await findUserById(userId,options);
+        const updateOptions={new:true,runValidators:true,context:'query'};
+         let updates={};
+         // name,email,password,phone,image,address
+        //  if(req.body.name){
+        //    updates.name=req.body.name;
+        //  }
+        //  if(req.body.password){
+        //    updates.password=req.body.password;
+        //  }
+        //  if(req.body.phone){
+        //    updates.phone=req.body.phone;
+        //  }
+        //  if(req.body.address){
+        //    updates.address=req.body.address;
+        //  }
+        const allowedFields=['name','password','phone','address'];
+       for(let key in req.body){
+        if(allowedFields.includes(key)){
+          updates[key]=req.body[key];
+        }
+        else if(key == 'email'){
+          throw new Error("Email can't be updated.");
+        }
+       }
+         const image=req.file?.path;
+        //  console.log("updated image ..."); 
+        //  console.log(image);
+        //  console.log("updated image ..."); 
+         if(image){
+          // image size max 2 mb
+          if (image.size>1024*1024*2) {
+            throw new Error("File too large.It must be lees then 2 MB");
+          }
+          updates.image = image;
+          // before image replace at this time
+          user.image != 'default.png' && deleteImage(user.image);
+         }
+     
+      const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
+      
+      if(!updatedUser){
+        throw new Error("User with this id does not existes");
+      }
+    
+    return updatedUser;
+     
+    } catch (error) {
+        if(error instanceof mongoose.Error.CastError){
+            throw (createError(400,"Invalide User Id"));
+         }
+           throw error;
     }
  }
 // manage user
@@ -80,4 +166,4 @@ try {
 }
 }
 
-module.exports={handleUserAction,findUsers,findUserById}
+module.exports={handleUserAction,findUsers,findUserById,deleteUserById,updateUserById}

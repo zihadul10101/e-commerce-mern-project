@@ -8,11 +8,11 @@ const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
-const { handleUserAction, findUsers, findUserById } = require('../services/userServices');
+const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById } = require('../services/userServices');
 
 
 // get all users
-const getUsers=async (req, res,next) => {
+const handleGetUsers=async (req, res,next) => {
   try {
    const search = req.query.search || "";
    const page = Number(req.query.page) || 1;
@@ -35,7 +35,7 @@ const getUsers=async (req, res,next) => {
   
  }
   // single user by find by id in
-const getUserById=async (req, res,next) => {
+const handleGetUserById=async (req, res,next) => {
   // console.log(req.user);
    try {
      const id= req.params.id;
@@ -53,17 +53,12 @@ const getUserById=async (req, res,next) => {
    } 
   }
   // single user delete
-const deletUserById=async (req, res,next) => {
+const handleDeletUserById=async (req, res,next) => {
    try {
      const id= req.params.id;
      const options={password:0};
-     const user= await findWithId(User,id,options);
-    //  const userImagePath= user.image;
-    //  deleteImage(userImagePath);
-     await User.findByIdAndDelete({_id:id,isAdmin:false});
-   if(user && user.image){
-     await deleteImage(user.image); 
-   }
+     await deleteUserById(id,options);
+   
       return successResponse(res,{
       statusCode:200,
       message:"User was delete successfully",  
@@ -74,7 +69,7 @@ const deletUserById=async (req, res,next) => {
    
   }
   // single user processRegister
-const processRegister=async (req, res,next) => {
+const handleProcessRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
     // console.log(req.file);
@@ -126,7 +121,7 @@ await emailWithNodeMailer(emailData);
    
   }
   // single user activateUserAccount
-const activateUserAccount=async (req, res,next) => {
+const handleActivateUserAccount=async (req, res,next) => {
    try { 
   const token=req.body.token;
   if(!token){
@@ -165,54 +160,12 @@ const activateUserAccount=async (req, res,next) => {
    
   }
     // single user updated
-const updateUserById=async (req, res,next) => {
+const handleUpdateUserById=async (req, res,next) => {
   try {
     const userId= req.params.id;
-    //find user
-    const options={password:0};
-    const user= await findWithId(User,userId,options);
-    const updateOptions={new:true,runValidators:true,context:'query'};
-     let updates={};
-     // name,email,password,phone,image,address
-    //  if(req.body.name){
-    //    updates.name=req.body.name;
-    //  }
-    //  if(req.body.password){
-    //    updates.password=req.body.password;
-    //  }
-    //  if(req.body.phone){
-    //    updates.phone=req.body.phone;
-    //  }
-    //  if(req.body.address){
-    //    updates.address=req.body.address;
-    //  }
-   for(let key in req.body){
-    if(['name','password','phone','address'].includes(key)){
-      updates[key]=req.body[key];
-    }
-    else if(['email'].includes(key)){
-      throw new Error("Email can't be updated.");
-    }
-   }
-     const image=req.file?.path;
-    //  console.log("updated image ..."); 
-    //  console.log(image);
-    //  console.log("updated image ..."); 
-     if(image){
-      // image size max 2 mb
-      if (image.size>1024*1024*2) {
-        throw new Error("File too large.It must be lees then 2 MB");
-      }
-      updates.image = image;
-      // before image replace at this time
-      user.image != 'default.png' && deleteImage(user.image);
-     }
- 
-  const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
-  if(!updatedUser){
-    throw new Error("User with this id does not existes");
-  }
-
+   
+     const updatedUser = await updateUserById(userId,req);
+    
      return successResponse(res,{
      statusCode:200,
      message:"User was updated successfully",  
@@ -244,5 +197,5 @@ const handleManageUserById=async (req, res,next) => {
   
 
 
-module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount,updateUserById,
+module.exports={handleGetUsers,handleGetUserById,handleUpdateUserById,handleDeletUserById,handleProcessRegister,handleActivateUserAccount,
   handleManageUserById};
