@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
 const {  findWithId } = require('../services/findItem');
-// const { deleteImage } = require('../helper/deleteImage');
 const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
@@ -26,18 +25,16 @@ const getUsers=async (req, res,next) => {
         {phone:{$regex:searchRegExp}}
       ]
     }
+  
      const options={password:0};
-
-
      const users=await User.find(filter,options)
      .limit(limit)
      .skip((page-1)*limit);
-
-
+  
      const count= await User.find(filter).countDocuments();
 
      if(!users) throw createError(404,"No user Found")
-
+   
     
     return successResponse(res,{
       statusCode:200,
@@ -59,6 +56,7 @@ const getUsers=async (req, res,next) => {
   }
   // single user by find by id in
 const getUserById=async (req, res,next) => {
+  // console.log(req.user);
    try {
      const id= req.params.id;
      const options={password:0};
@@ -105,7 +103,7 @@ const processRegister=async (req, res,next) => {
     //   throw new Error("Image File is Required");
     // }
     if (image && image.size>1024*1024*2) {
-      throw new Error("File too large.It must be lees then 2 MB");
+      throw new Error("File too large.It must be lees then 2 MB.");
     }
 
     //const imageBufferString = req.file.buffer.toString('base64');
@@ -115,7 +113,7 @@ const tokenPayload={ name, email, password, phone, address};
 if(image){
   tokenPayload.image = image;
 }
-   const token = createJSONWebToken(tokenPayload, jwtActivationKey, '10m');
+ const token = createJSONWebToken(tokenPayload, jwtActivationKey, '15m');
 // prepare email
 const emailData = {
   email,
@@ -128,7 +126,7 @@ const emailData = {
 };
 // send email with nodemailer
 try {
-//await emailWithNodeMailer(emailData);
+await emailWithNodeMailer(emailData);
 } catch (emailError) {
   next(createError(500,"Failed to send verifation email"));
   return;
@@ -164,8 +162,8 @@ const activateUserAccount=async (req, res,next) => {
   if(userExists){
    throw createError(409,"User with this email already exists , please sign in");
   }
-  
    await User.create(decoded);
+
       return successResponse(res,{
       statusCode:201,
       message:"User was registered successfully", 
@@ -239,7 +237,56 @@ const updateUserById=async (req, res,next) => {
      statusCode:200,
      message:"User was updated successfully",  
      payload:updatedUser
+   })
+  } catch (error) {
+    next(error); 
+  }
   
+ }
+    // single ban user 
+const handleBanUserById=async (req, res,next) => {
+  try {
+    const userId= req.params.id;
+    //find user
+    await findWithId(User,userId);
+    const updateOptions={new:true,runValidators:true,context:'query'}; 
+     const updates= {isBanned:true};
+
+ 
+  const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
+  if(!updatedUser){
+    throw new Error("User was not banned successfully");
+  }
+
+     return successResponse(res,{
+     statusCode:200,
+     message:"User was banned successfully",  
+     payload:updatedUser
+   })
+  } catch (error) {
+    next(error); 
+  }
+  
+ }
+    // single unban user 
+const handleUnBanUserById=async (req, res,next) => {
+  try {
+    const userId= req.params.id;
+    //find user
+    await findWithId(User,userId);
+    const updateOptions={new:true,runValidators:true,context:'query'}; 
+     const updates= {isBanned:false};
+
+ 
+  const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
+  if(!updatedUser){
+    throw new Error("User was not unbanned successfully");
+  }
+
+     return successResponse(res,{
+     statusCode:200,
+     message:"User was unbanned successfully",  
+     payload:updatedUser
    })
   } catch (error) {
     next(error); 
@@ -247,4 +294,5 @@ const updateUserById=async (req, res,next) => {
   
  }
 
-module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount,updateUserById};
+module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount,updateUserById,
+  handleBanUserById,handleUnBanUserById};

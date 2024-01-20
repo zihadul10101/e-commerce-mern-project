@@ -14,4 +14,4 @@ const connectDatabase=async(optins={})=>{
         console.log("could not connect to DB:",error.toString());    
     }
 }
-module.exports= connectDatabase;
+module.exports = connectDatabase;

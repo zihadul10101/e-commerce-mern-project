@@ -72,7 +72,7 @@ npm i multer
 ## add express validator middlewar
 npm i express-validator
 ## Storing image as buffer or string?
-## PUT/api/users/:id -> update a single user by id
+## user logoutPUT/api/users/:id -> update a single user by id
  ***authentication and authorization *** 
 ## POST/api/auth/login=> user login using JWT
    1. email password req.body
@@ -80,8 +80,10 @@ npm i express-validator
    3. compare the password
    4. is banned 
    5. token set,cookie -> npm i cookie-parser
-## POST/api/auth/logout=> user logout 
+## POST/api/auth/logout=>  
 ## Middlewares => isLoggedIn,isLoggedOut,isAdmin
+## input validation when signed ID and refactoring
+<!-- https://cloud.mongodb.com/v2/605a21d6c01d53693cfafce4#/metrics/replicaSet/65864dfecaa0f12c16d6de98/explorer/ecommerceMernDB/users/find -->
 
 
 

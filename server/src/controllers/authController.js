@@ -22,24 +22,25 @@ try {
     throw createError(401,"Email/password did not match.");
    }
    //is banned 
-   
+
    if(user.isBanned){
     throw createError(403,"User loggedin successfully");
    }
    //token set,cookie
-   const tokenPayload={_id:user._id};
-   const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '10m');
+   const tokenPayload={user};
+   const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '15m');
    res.cookie('accessToken',accessToken,{
     maxAge: 15 * 60 * 1000 , //15 minute
     httpOnly:true,
     //secure:true,
     sameSite:'none'
    })
+   const userWithoutPassword= await User.findOne({email}).select("-password");
    // success Response 
    return successResponse(res,{
     statusCode:200,
     message:"User logged in successfully",
-    payload:{  }
+    payload:{userWithoutPassword}
   })
 } catch (error) {
     next(error);

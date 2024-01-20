@@ -1,6 +1,7 @@
 const createError = require('http-errors');
 const jwt = require('jsonwebtoken');
 const { jwtAcccessKey } = require('../secret');
+
 const  isLoggedIn=async(req,res,next)=>{
    try {
     const accessToken=req.cookies.accessToken;
@@ -13,12 +14,13 @@ const  isLoggedIn=async(req,res,next)=>{
     if(!decode){
         throw createError(401,"Invalid Access Token,Please Log in Again");
     }
-    req.body.userId= decode._id;
+    req.user= decode.user;
     next();
    } catch (error) {
     next(error);
    }
 }
+
 const  isLoggedOut=async(req,res,next)=>{
    try {
     const accessToken=req.cookies.accessToken;
@@ -39,5 +41,16 @@ const  isLoggedOut=async(req,res,next)=>{
     next(error);
    }
 }
+const  isAdmin=async(req,res,next)=>{
+   try {
+   ///console.log(req.user.isAdmin);
+  if(!req.user.isAdmin){
+    throw createError(403,"Forbidden.You must be an admin to access this resource.");
+  }
+    next();
+   } catch (error) {
+    next(error);
+   }
+}
 
-module.exports={isLoggedIn,isLoggedOut}
+module.exports={isLoggedIn,isLoggedOut,isAdmin}
