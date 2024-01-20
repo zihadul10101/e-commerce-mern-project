@@ -8,7 +8,7 @@ const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
-const { handleUserAction, findUsers } = require('../services/userServices');
+const { handleUserAction, findUsers, findUserById } = require('../services/userServices');
 
 
 // get all users
@@ -40,7 +40,7 @@ const getUserById=async (req, res,next) => {
    try {
      const id= req.params.id;
      const options={password:0};
-     const user= await findWithId(User,id,options);
+     const user= await findUserById(id,options);
       return successResponse(res,{
       statusCode:200,
       message:"User were returned successfully",

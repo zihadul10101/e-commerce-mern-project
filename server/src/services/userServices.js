@@ -40,6 +40,19 @@ const User = require("../models/userModels");
        throw error; 
     }
  }
+// handle get single user
+ const findUserById = async (id,options={})=>{
+ 
+    try {
+   const user=await User.findById(id,options);
+   if(!user){
+    throw createError(404,"No user Found");
+ }    
+     return user;    
+    } catch (error) {
+       throw error; 
+    }
+ }
 // manage user
 const handleUserAction = async(userId,action) =>{
 try {
@@ -67,4 +80,4 @@ try {
 }
 }
 
-module.exports={handleUserAction,findUsers}
+module.exports={handleUserAction,findUsers,findUserById}
