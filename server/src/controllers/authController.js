@@ -10,6 +10,7 @@ const handleLogin=async (req, res,next) => {
 try {
    // email password req.body
    const {email, password} = req.body;
+ 
    //isExist 
    const user= await User.findOne({email});
    if(!user){

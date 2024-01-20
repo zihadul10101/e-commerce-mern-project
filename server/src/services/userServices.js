@@ -1,6 +1,46 @@
-const createHttpError = require("http-errors");
+const createError = require('http-errors');
 const User = require("../models/userModels");
 
+// handle get user
+ const findUsers = async (search,limit,page)=>{
+ 
+    try {
+
+        const searchRegExp = new RegExp(".*"+ search + ".*",'i');
+        const filter = {
+          isAdmin:{$ne: true},
+          $or:[
+            {name:{$regex:searchRegExp}},
+            {email:{$regex:searchRegExp}},
+            {phone:{$regex:searchRegExp}}
+          ]
+        }
+      
+         const options={password:0};
+         const users=await User.find(filter,options)
+         .limit(limit)
+         .skip((page-1)*limit);
+         const count= await User.find(filter).countDocuments();
+    
+         if(!users || users.length==0){
+            throw createError(404,"No user Found");
+         } 
+       
+         return {
+            users,
+            pagination:{
+              totalPage:Math.ceil(count/limit),
+              currentPage:page,
+              previousPage:page-1>0? page-1:null,
+              nextPage:page+1<Math.ceil(count/limit)? page+1:null,
+            }, 
+         } 
+         
+    } catch (error) {
+       throw error; 
+    }
+ }
+// manage user
 const handleUserAction = async(userId,action) =>{
 try {
     let update;
@@ -13,7 +53,7 @@ try {
       update={isBanned:false}
       successMessage="User was  unbanned successfully "
     }else{
-      throw createHttpError(400,"Invalid action.Use 'ban' or 'unban' .");
+      throw createError(400,"Invalid action.Use 'ban' or 'unban' .");
     }
    ;
   const updateOptions={new:true,runValidators:true,context:'query'}; 
@@ -27,4 +67,4 @@ try {
 }
 }
 
-module.exports={handleUserAction}
+module.exports={handleUserAction,findUsers}
