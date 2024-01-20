@@ -8,6 +8,7 @@ const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
+const { handleUserAction } = require('../services/userServices');
 
 
 // get all users
@@ -243,56 +244,26 @@ const updateUserById=async (req, res,next) => {
   }
   
  }
-    // single ban user 
-const handleBanUserById=async (req, res,next) => {
+    // single manage ban and unben user 
+const handleManageUserById=async (req, res,next) => {
   try {
     const userId= req.params.id;
-    //find user
-    await findWithId(User,userId);
-    const updateOptions={new:true,runValidators:true,context:'query'}; 
-     const updates= {isBanned:true};
+    const action= req.body.action;
 
- 
-  const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
-  if(!updatedUser){
-    throw new Error("User was not banned successfully");
-  }
+  const successMessage= await handleUserAction(userId,action);
 
      return successResponse(res,{
      statusCode:200,
-     message:"User was banned successfully",  
-     payload:updatedUser
+     message:successMessage,  
+   
    })
   } catch (error) {
     next(error); 
   }
   
  }
-    // single unban user 
-const handleUnBanUserById=async (req, res,next) => {
-  try {
-    const userId= req.params.id;
-    //find user
-    await findWithId(User,userId);
-    const updateOptions={new:true,runValidators:true,context:'query'}; 
-     const updates= {isBanned:false};
-
- 
-  const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
-  if(!updatedUser){
-    throw new Error("User was not unbanned successfully");
-  }
-
-     return successResponse(res,{
-     statusCode:200,
-     message:"User was unbanned successfully",  
-     payload:updatedUser
-   })
-  } catch (error) {
-    next(error); 
-  }
   
- }
+
 
 module.exports={getUsers,getUserById,deletUserById,processRegister,activateUserAccount,updateUserById,
-  handleBanUserById,handleUnBanUserById};
+  handleManageUserById};

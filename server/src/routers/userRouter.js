@@ -1,5 +1,6 @@
 const express= require("express");
-const { getUsers, deletUserById, getUserById, processRegister, activateUserAccount, updateUserById, handleBanUserById, handleUnBanUserById } = require("../controllers/userController");
+const { getUsers, deletUserById, getUserById, processRegister, activateUserAccount, updateUserById,
+    handleManageUserById } = require("../controllers/userController");
 const { uploadUserImage } = require("../middlewares/uplodeFile");
 const { validateUserRegistration } = require("../validors/auth");
 const { runValidation } = require("../validors");
@@ -14,8 +15,8 @@ userRouter.get('/',isLoggedIn,isAdmin,getUsers);
 userRouter.get('/:id',isLoggedIn,getUserById );
 userRouter.delete('/:id',isLoggedIn,deletUserById );
 userRouter.put('/:id',uploadUserImage.single("image"),isLoggedIn,updateUserById);
-userRouter.put('/ban-user/:id',isLoggedIn,isAdmin,handleBanUserById);
-userRouter.put('/unban-user/:id',isLoggedIn,isAdmin,handleUnBanUserById);
+userRouter.put('/manage-user/:id',isLoggedIn,isAdmin,handleManageUserById);
+
 
 
 module.exports={userRouter};
