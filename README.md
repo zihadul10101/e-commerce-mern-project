@@ -40,6 +40,7 @@ modeal view controller
 
 ## DataBase connection mongodb
 install mongodb
+
 install mongodb connection
 npm install mongoose --save
 
@@ -86,6 +87,13 @@ npm i express-validator
 ## PUT /api/users/ban-user -> ban user
 ## PUT /api/users/unban-user -> unban user
 ## PUT /api/users/updated-password -> updated the password
+ 0. req body => email,oldPassword,newPassword,confirmedPassword
+ 1. extract email,oldPassword,newPassword,confirmedPassword
+ 2. isExist
+ 3. isPasswordMatch(oldPassword,password)
+ 4. setup updated option
+ 5. response
+
 <!-- https://cloud.mongodb.com/v2/605a21d6c01d53693cfafce4#/metrics/replicaSet/65864dfecaa0f12c16d6de98/explorer/ecommerceMernDB/users/find -->
 
 

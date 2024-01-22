@@ -65,5 +65,34 @@ const validateUserLogin =[
    
    
 ]
+// sign in validator
+const validateUserPassword =[
+  
+    body('oldPassword')
+    .trim()
+    .notEmpty()
+    .withMessage("Old password is required.Enter your old password")
+    .isLength({min:6})
+    .withMessage("Old password should be at least 6 characters")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]).{8,}$/)
+    .withMessage("Old Password should include at least one uppercase letter, one lowercase letter, one number, and one special character."),
+ 
+    body('newPassword')
+    .trim()
+    .notEmpty()
+    .withMessage("New password is required.Enter your old password")
+    .isLength({min:6})
+    .withMessage("New password should be at least 6 characters")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]).{8,}$/)
+    .withMessage("New Password should include at least one uppercase letter, one lowercase letter, one number, and one special character."),
+    body('confirmedPassword').custom((value,{req})=>{
+        if(value != req.body.newPassword){
+            throw new Error("Password did not match");
+        }
+        return true;
+    })
+   
+   
+]
 
-module.exports={validateUserRegistration,validateUserLogin}
+module.exports={validateUserRegistration,validateUserLogin,validateUserPassword}

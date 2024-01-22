@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-
+const bcrypt =require('bcryptjs');
 const User = require("../models/userModels");
 const { deleteImage } = require('../helper/deleteImageHelper');
 const mongoose=require('mongoose');
@@ -166,4 +166,42 @@ try {
 }
 }
 
-module.exports={handleUserAction,findUsers,findUserById,deleteUserById,updateUserById}
+// handle updated user password by id
+const updatedPasswordById = async (userId,req)=>{
+ 
+  try {
+  
+    const {email,oldPassword,newPassword,confirmedPassword} = req.body;
+    const user= await User.findOne({email});
+    if(!user){
+     throw createError(401,"User does not exist with this email.Please register first!.");
+    };
+   if(newPassword != confirmedPassword){
+    throw createError(400,"New Password and Confirmed Password did not match.");
+   }
+   //compare the password
+   const isPasswordMatch = await bcrypt.compare(oldPassword,user.password);
+  
+   if(!isPasswordMatch){
+    throw createError(400,"Old password did not match.");
+   } 
+    //  let updates={$set:{password:newPassword}};
+      //const updateOptions={new:true,runValidators:true,context:'query'};
+      const updateOptions={new:true};
+    const updatedUser=await User.findByIdAndUpdate(userId,{password:newPassword},updateOptions).select("-password");
+    
+    if(!updatedUser){
+      throw new Error("User with this id does not existes");
+    }
+  
+  return updatedUser;
+   
+  } catch (error) {
+      if(error instanceof mongoose.Error.CastError){
+          throw (createError(400,"Invalide User Id"));
+       }
+         throw error;
+  }
+}
+
+module.exports={handleUserAction,findUsers,findUserById,deleteUserById,updateUserById,updatedPasswordById}

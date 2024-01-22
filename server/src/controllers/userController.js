@@ -8,7 +8,7 @@ const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
-const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById } = require('../services/userServices');
+const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById, updatedPasswordById } = require('../services/userServices');
 
 
 // get all users
@@ -194,8 +194,26 @@ const handleManageUserById=async (req, res,next) => {
   }
   
  }
+    //  user password updated
+const handleUpdatedPassword=async (req, res,next) => {
+  try {
+    
+    const userId= req.params.id;
+   
+     const updatedUser = await updatedPasswordById(userId,req);
+    
+     return successResponse(res,{
+     statusCode:200,
+     message:"User was password updated successfully",  
+     payload:{updatedUser}
+   })
+  } catch (error) {
+    next(error); 
+  }
+  
+ }
   
 
 
 module.exports={handleGetUsers,handleGetUserById,handleUpdateUserById,handleDeletUserById,handleProcessRegister,handleActivateUserAccount,
-  handleManageUserById};
+  handleManageUserById,handleUpdatedPassword};
