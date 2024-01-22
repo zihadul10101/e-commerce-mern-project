@@ -1,53 +1,51 @@
 #ECOMERE PROJECT MERAN 
 ## Enverment setup
-node install, 
+1. node install, 
 ## Express server setup
-npm init -y
-npm i express
+1. npm init -y
+2. npm i express
 ## HTTP request and  response
 ## Nodemon and morgan package
-npm i --save-dev nodemon
+1. npm i --save-dev nodemon
 chang packaje.jeson
   "scripts": {
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-npm i --save-dev morgan
+2. npm i --save-dev morgan
 
 ## api test with postman
-## Middleware (req,res,next)
-*Built-in middleware
-1.express.json
-2.express.urlencoded
-*Error-handling middleware
-*Third-party middleware
- npm i body-parser
-  1.server error handling error
-  2.client error handling error
+## Middleware (req,res,next) 
+## Built-in middleware
+1. express.json
+2. express.urlencoded
+## Error-handling middleware
+## Third-party middleware
+ 0. npm i body-parser
+  1. server error handling error
+  2. client error handling error
 ## How to handle HTTP errors
-npm install http-errors
+1. npm install http-errors
 
 ## How to secure API -> xss-clean , express-rate-limit
-npm i xss-clean
-npm i express-rate-limit
+1. npm i xss-clean
+2. npm i express-rate-limit
 
 ##  Environment variable and .gitignore
-npm i dotenv
+1. npm i dotenv
 
 ## MVC Architecture
-modeal view controller 
+1. modeal view controller 
 
 ## DataBase connection mongodb
-install mongodb
-
-install mongodb connection
-npm install mongoose --save
+1. install mongodb
+2. install mongodb connection
+3. npm install mongoose --save
 
 ## Schema and Model for user
-npm i bcrypt
+1. npm i bcrypt
 ## Create a Seed route for user
-
 ## GET/api/users -> isAdmin-> getAllUsers ->SearchByName -> pagination functionality
 ## response Handler controller for error or success 
 ## GET /api/user/:id -> get a single user by id
@@ -57,21 +55,21 @@ npm i bcrypt
 ## Delete Image helper
 ## Post / api/user/process-register-> process the registration
 ## Create JWT -> npm i jsonwebtoken
-npm i nodemailer
-prepare smtp and prepare email
-serch => security.google.com/settings/apppassword =>appname=>website=>vxdd qgrj ckag phjc
+1. npm i nodemailer
+2. prepare smtp and prepare email
+3. serch => security.google.com/settings/apppassword =>appname=>website=>vxdd qgrj ckag phjc
 
-npm i bcryptjs
-and uninstall npm uninstall bcrypt
-npm install nodemailer
+4. npm i bcryptjs
+5. and uninstall npm uninstall bcrypt
+6. npm install nodemailer
 
 ## Post / api/users/verify 
-verify + register into data
+1. verify + register into data
 ## add multer middlewar Image upload
-npm i multer
+1. npm i multer
 ## File filtering file size and refactor
 ## add express validator middlewar
-npm i express-validator
+1. npm i express-validator
 ## Storing image as buffer or string?
 ## user logoutPUT/api/users/:id -> update a single user by id
  ***authentication and authorization *** 
@@ -93,12 +91,19 @@ npm i express-validator
  3. isPasswordMatch(oldPassword,password)
  4. setup updated option
  5. response
+ ## POST /api/users/forget-password -> forget the password
+ 1. fetch the email
+ 2. user isExist
+ 3. create a json web token
+ 4. send reset password link in email including token 
 
+ ## PUT /api/users/forget-password -> forget the password
+ 1. fetch the token and password from req.body
+ 2. verify token
+ 3. if decode is empty show error message
+ 4. findOneAndUpdated
+ 5. if updated is not successfullly show error message
 <!-- https://cloud.mongodb.com/v2/605a21d6c01d53693cfafce4#/metrics/replicaSet/65864dfecaa0f12c16d6de98/explorer/ecommerceMernDB/users/find -->
-
-
-
-
 
 
 
