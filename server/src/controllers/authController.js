@@ -70,7 +70,8 @@ try {
 }
 const handleRefreshToken=async (req, res,next) => {
 try {
-   const oldRefreshToken= req.cookie.refreshToken;
+  const oldRefreshToken = req.cookies.refreshToken;
+
    // verify old Refresh Token
    const decodedToken=jwt.verify(oldRefreshToken,jwtRefreshKey);
    if(!decodedToken){
@@ -93,4 +94,23 @@ try {
     next(error);
 }
 }
-module.exports={handleLogin,handleLogout,handleRefreshToken};
+const handleProtectedRoute=async (req, res,next) => {
+try {
+  const accessToken = req.cookies.accessToken;
+
+   // verify old Refresh Token
+   const decodedToken=jwt.verify(accessToken,jwtAcccessKey);
+   if(!decodedToken){
+    throw createError(401,"Invalid access token.Pleash login again.")
+   }
+
+   return successResponse(res,{
+    statusCode:200,
+    message:"Protected resourcess accessed successfully",
+
+  })
+} catch (error) {
+    next(error);
+}
+}
+module.exports={handleLogin,handleLogout,handleRefreshToken,handleProtectedRoute};
