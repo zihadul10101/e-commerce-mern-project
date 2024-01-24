@@ -4,13 +4,12 @@ const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const bcrypt =require('bcryptjs');
-const { jwtAcccessKey } = require('../secret');
+const { jwtAcccessKey, jwtRefreshKey } = require('../secret');
 
 const handleLogin=async (req, res,next) => {
 try {
    // email password req.body
    const {email, password} = req.body;
- 
    //isExist 
    const user= await User.findOne({email});
    if(!user){
@@ -29,9 +28,18 @@ try {
    }
    //token set,cookie
    const tokenPayload={user};
-   const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '15m');
+   const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '1m');
    res.cookie('accessToken',accessToken,{
-    maxAge: 15 * 60 * 1000 , //15 minute
+    maxAge: 1 * 60 * 1000 , //15 minute
+    httpOnly:true,
+    //secure:true,
+    sameSite:'none'
+   })
+   //refresh token set,cookie
+  
+   const refreshToken = createJSONWebToken(tokenPayload, jwtRefreshKey, '7d');
+   res.cookie('refreshToken',refreshToken,{
+    maxAge: 7 * 24 * 60 * 60 * 1000 , //7 day
     httpOnly:true,
     //secure:true,
     sameSite:'none'
@@ -60,4 +68,29 @@ try {
     next(error);
 }
 }
-module.exports={handleLogin,handleLogout};
+const handleRefreshToken=async (req, res,next) => {
+try {
+   const oldRefreshToken= req.cookie.refreshToken;
+   // verify old Refresh Token
+   const decodedToken=jwt.verify(oldRefreshToken,jwtRefreshKey);
+   if(!decodedToken){
+    throw createError(401,"Invalid refresh token.Pleash login again.")
+   }
+    //token set,cookie
+    const accessToken = createJSONWebToken(decodedToken.user, jwtAcccessKey, '1m');
+    res.cookie('accessToken',accessToken,{
+     maxAge: 1 * 60 * 1000 , //15 minute
+     httpOnly:true,
+     //secure:true,
+     sameSite:'none'
+    })
+   return successResponse(res,{
+    statusCode:200,
+    message:"New access token is generated",
+
+  })
+} catch (error) {
+    next(error);
+}
+}
+module.exports={handleLogin,handleLogout,handleRefreshToken};
