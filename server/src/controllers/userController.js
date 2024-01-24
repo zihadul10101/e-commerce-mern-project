@@ -3,12 +3,12 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
 const { successResponse } = require('./responseController');
-const {  findWithId } = require('../services/findItem');
-const { deleteImage } = require('../helper/deleteImageHelper');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtActivationKey, clientURL } = require('../secret');
 const { emailWithNodeMailer } = require('../helper/email');
-const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById, updatedPasswordById } = require('../services/userServices');
+const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById, updatedPasswordById, 
+  userForgetPasswordByEmail, 
+  resetPassword} = require('../services/userServices');
 
 
 // get all users
@@ -212,8 +212,41 @@ const handleUpdatedPassword=async (req, res,next) => {
   }
   
  }
+    //  user reset password
+const handleResetPassword=async (req, res,next) => {
+  try {
+    
+     const userId= req.params.id;
+     const updatedUser = await resetPassword(userId,req);
+    
+     return successResponse(res,{
+     statusCode:200,
+     message:"User Reset password updated successfully",  
+     payload:{updatedUser}
+   })
+  } catch (error) {
+    next(error); 
+  }
+  
+ }
+    //  user forget password 
+const handleForgetPassword=async (req, res,next) => {
+  try {
+     
+    const {email} = req.body;
+   const token= await userForgetPasswordByEmail(email);
+    return successResponse(res,{
+      statusCode:200,
+      message:`Please go to your ${email}  for completing forget password.`, 
+      payload: token
+    })
+  } catch (error) {
+    next(error); 
+  }
+  
+ }
   
 
 
 module.exports={handleGetUsers,handleGetUserById,handleUpdateUserById,handleDeletUserById,handleProcessRegister,handleActivateUserAccount,
-  handleManageUserById,handleUpdatedPassword};
+  handleManageUserById,handleUpdatedPassword,handleForgetPassword,handleResetPassword};

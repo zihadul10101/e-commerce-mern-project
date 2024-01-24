@@ -97,7 +97,8 @@ chang packaje.jeson
  3. create a json web token
  4. send reset password link in email including token 
 
- ## PUT /api/users/forget-password -> forget the password
+ ## PUT /api/users/reset-password -> reset the password 
+ 0. body=> token and password
  1. fetch the token and password from req.body
  2. verify token
  3. if decode is empty show error message

@@ -7,9 +7,11 @@ const {
     handleDeletUserById,
     handleProcessRegister,
     handleActivateUserAccount,
-    handleUpdatedPassword} = require("../controllers/userController");
+    handleUpdatedPassword,
+    handleForgetPassword,
+    handleResetPassword} = require("../controllers/userController");
 const { uploadUserImage } = require("../middlewares/uplodeFile");
-const { validateUserRegistration, validateUserPassword } = require("../validors/auth");
+const { validateUserRegistration, validateUserPassword, validateUserForgetPassword, validateUserResetPassword } = require("../validors/auth");
 const { runValidation } = require("../validors");
 const { isLoggedIn, isLoggedOut, isAdmin } = require("../middlewares/auth");
 const userRouter = express.Router();
@@ -21,9 +23,13 @@ userRouter.post('/activate',isLoggedOut,handleActivateUserAccount);
 userRouter.get('/',isLoggedIn,isAdmin,handleGetUsers);
 userRouter.get('/:id',isLoggedIn,handleGetUserById );
 userRouter.delete('/:id',isLoggedIn,handleDeletUserById );
+userRouter.put('/reset-password',validateUserResetPassword,runValidation,handleResetPassword);
 userRouter.put('/:id',uploadUserImage.single("image"),isLoggedIn,handleUpdateUserById);
 userRouter.put('/manage-user/:id',isLoggedIn,isAdmin,handleManageUserById);
 userRouter.put('/updated-password/:id',validateUserPassword,runValidation,isLoggedIn,handleUpdatedPassword);
+userRouter.post('/forget-password',validateUserForgetPassword,runValidation,handleForgetPassword);
+
+
 
 
 

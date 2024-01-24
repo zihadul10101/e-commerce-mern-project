@@ -65,7 +65,7 @@ const validateUserLogin =[
    
    
 ]
-// sign in validator
+// updated password in validator
 const validateUserPassword =[
   
     body('oldPassword')
@@ -94,5 +94,32 @@ const validateUserPassword =[
    
    
 ]
+// forget password in validator
+const validateUserForgetPassword =[
+    body('email')
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required,Enter your email")
+    .isEmail()
+    .withMessage("Invalid email address"),
+   
+]
+// reset password in validator
+const validateUserResetPassword =[
+    body('token')
+    .trim()
+    .notEmpty()
+    .withMessage("Token is required."),
+    body('password')
+    .trim()
+    .notEmpty()
+    .withMessage("password is required.Enter your epassword")
+    .isLength({min:6})
+    .withMessage("password should be at least 6 characters")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]).{8,}$/)
+    .withMessage("Password should include at least one uppercase letter, one lowercase letter, one number, and one special character."),
+ 
+   
+]
 
-module.exports={validateUserRegistration,validateUserLogin,validateUserPassword}
+module.exports={validateUserRegistration,validateUserLogin,validateUserPassword,validateUserResetPassword,validateUserForgetPassword}

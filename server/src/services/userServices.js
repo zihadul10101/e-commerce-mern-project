@@ -1,8 +1,13 @@
 const createError = require('http-errors');
 const bcrypt =require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require("../models/userModels");
 const { deleteImage } = require('../helper/deleteImageHelper');
 const mongoose=require('mongoose');
+const { emailWithNodeMailer } = require('../helper/email');
+const { createJSONWebToken } = require('../helper/jsonwebtoken');
+const { jwtForgetPasswordKey } = require('../secret');
+
 
 // handle get user
  const findUsers = async (search,limit,page)=>{
@@ -142,6 +147,7 @@ const mongoose=require('mongoose');
 // manage user
 const handleUserAction = async(userId,action) =>{
 try {
+
     let update;
     let successMessage;
     if(action =='ban'){
@@ -157,6 +163,7 @@ try {
    ;
   const updateOptions={new:true,runValidators:true,context:'query'}; 
   const updatedUser=await User.findByIdAndUpdate(userId,update,updateOptions).select("-password");
+  
   if(!updatedUser){
     throw new Error("User was not banned successfully");
   } 
@@ -203,5 +210,71 @@ const updatedPasswordById = async (userId,req)=>{
          throw error;
   }
 }
+// handle reset user password by id
+const resetPassword = async (userId,req)=>{
+ 
+  try {
+    const {password,token} = req.body;
+    const decoded=jwt.verify(token,jwtForgetPasswordKey);
+    if(!decoded){
+     throw createError(400,"Invalid or expired token");
+   }
+      const filter={email:decoded.email};
+      const update={password:password}
+      const updateOptions={new:true};
+      const updatedUser=await User.findOneAndUpdate(filter,update,updateOptions)
+    .select("-password");
+    
+    if(!updatedUser){
+      throw new Error("Password reset failed");
+    }
+  return updatedUser;
+   
+  } catch (error) {
+         throw error;
+  }
+}
 
-module.exports={handleUserAction,findUsers,findUserById,deleteUserById,updateUserById,updatedPasswordById}
+// handle updated user password by id
+const userForgetPasswordByEmail = async (email)=>{
+ 
+  try {
+
+    const user= await User.findOne({email});
+    if(!user){
+     throw createError(404,"Email is incorrect or you have not verified your email address.Please register first.");
+    };
+   
+    // create jwt
+    const tokenPayload={ email};
+   
+     const token = createJSONWebToken(tokenPayload, jwtForgetPasswordKey, '15m');
+    // prepare email
+    const emailData = {
+      email,
+      subject: "Reset password Email",
+      html: `
+        <h2>Hello ${user.name} !</h2>
+        <p>Please click here to <a href="http://localhost:3000/api/users/forget-password/${token}"
+         target="_blank">
+          your forget password account</a></p>
+      `
+    };
+    // send email with nodemailer
+    try {
+       await emailWithNodeMailer(emailData);
+  
+    } catch (emailError) {
+      next(createError(500,"Failed to send forget password verifation email"));
+      return;
+    }
+  
+    return token;
+   
+  } catch (error) {
+         throw error;
+  }
+}
+
+module.exports={handleUserAction,findUsers,findUserById,deleteUserById,updateUserById,
+  updatedPasswordById,userForgetPasswordByEmail,resetPassword}
