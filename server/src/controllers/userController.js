@@ -9,6 +9,8 @@ const { emailWithNodeMailer } = require('../helper/email');
 const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById, updatedPasswordById, 
   userForgetPasswordByEmail, 
   resetPassword} = require('../services/userServices');
+const checkUserExists = require('../helper/checkUserExist');
+const sendEmail = require('../helper/sendEmail');
 
 
 // get all users
@@ -72,7 +74,6 @@ const handleDeletUserById=async (req, res,next) => {
 const handleProcessRegister=async (req, res,next) => {
    try {
     const {name ,email,password,phone,address} =req.body;
-    // console.log(req.file);
     const image=req.file?.path;
     // if (!image) {
     //   throw new Error("Image File is Required");
@@ -95,21 +96,16 @@ const emailData = {
   subject: "Account Activation Email",
   html: `
     <h2>Hello ${name} !</h2>
-    <p>Please click here to <a href="http://localhost:3000/api/users/activate/${token}" target="_blank">
+    <p>Please click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">
     activate your account</a></p>
   `
 };
 // send email with nodemailer
-try {
-await emailWithNodeMailer(emailData);
-} catch (emailError) {
-  next(createError(500,"Failed to send verifation email"));
-  return;
-}
-     const userExists= await User.exists({email:email});
-     if(userExists){
-      throw createError(409,"User with this email already exists , please sign in");
-     }
+sendEmail(emailData);
+const userExists=await checkUserExists(email);
+if(userExists){
+ throw createError(409,"User with this email already exists , please sign in");
+}  
       return successResponse(res,{
       statusCode:200,
       message:`Please go to your ${email}  for completing your registration process`, 
@@ -137,8 +133,7 @@ const handleActivateUserAccount=async (req, res,next) => {
   if(userExists){
    throw createError(409,"User with this email already exists , please sign in");
   }
-   await User.create(decoded);
-
+      await User.create(decoded);
       return successResponse(res,{
       statusCode:201,
       message:"User was registered successfully", 
@@ -162,8 +157,7 @@ const handleActivateUserAccount=async (req, res,next) => {
     // single user updated
 const handleUpdateUserById=async (req, res,next) => {
   try {
-    const userId= req.params.id;
-   
+     const userId= req.params.id;
      const updatedUser = await updateUserById(userId,req);
     
      return successResponse(res,{
@@ -248,5 +242,9 @@ const handleForgetPassword=async (req, res,next) => {
   
 
 
-module.exports={handleGetUsers,handleGetUserById,handleUpdateUserById,handleDeletUserById,handleProcessRegister,handleActivateUserAccount,
-  handleManageUserById,handleUpdatedPassword,handleForgetPassword,handleResetPassword};
+module.exports={handleGetUsers,handleGetUserById,
+  handleUpdateUserById,handleDeletUserById,
+  handleProcessRegister,handleActivateUserAccount,
+  handleManageUserById,handleUpdatedPassword,
+  handleForgetPassword,handleResetPassword
+};

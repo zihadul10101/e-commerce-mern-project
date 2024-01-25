@@ -21,12 +21,12 @@ const userRouter = express.Router();
 userRouter.post('/process-register',uploadUserImage.single("image"),isLoggedOut,validateUserRegistration,runValidation,handleProcessRegister );
 userRouter.post('/activate',isLoggedOut,handleActivateUserAccount);
 userRouter.get('/',isLoggedIn,isAdmin,handleGetUsers);
-userRouter.get('/:id',isLoggedIn,handleGetUserById );
-userRouter.delete('/:id',isLoggedIn,handleDeletUserById );
+userRouter.get('/:id([0-9a-fA-F]{24})',isLoggedIn,handleGetUserById );
+userRouter.delete('/:id([0-9a-fA-F]{24})',isLoggedIn,handleDeletUserById );
 userRouter.put('/reset-password',validateUserResetPassword,runValidation,handleResetPassword);
-userRouter.put('/:id',uploadUserImage.single("image"),isLoggedIn,handleUpdateUserById);
-userRouter.put('/manage-user/:id',isLoggedIn,isAdmin,handleManageUserById);
-userRouter.put('/updated-password/:id',validateUserPassword,runValidation,isLoggedIn,handleUpdatedPassword);
+userRouter.put('/:id([0-9a-fA-F]{24})',uploadUserImage.single("image"),isLoggedIn,handleUpdateUserById);
+userRouter.put('/manage-user/:id([0-9a-fA-F]{24})',isLoggedIn,isAdmin,handleManageUserById);
+userRouter.put('/updated-password/:id([0-9a-fA-F]{24})',validateUserPassword,runValidation,isLoggedIn,handleUpdatedPassword);
 userRouter.post('/forget-password',validateUserForgetPassword,runValidation,handleForgetPassword);
 
 

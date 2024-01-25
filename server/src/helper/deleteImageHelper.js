@@ -1,13 +1,14 @@
+const logger = require('../controllers/logger/logerController');
+
 const fs = require('fs').promises;
 const deleteImage = async(imagePath) =>{
    
-try {
-   // console.log("delete image");  
+try { 
     await  fs.access(imagePath)
     await  fs.unlink(imagePath)
-    console.error("user image was deleted");
+    logger.error("error","user image was deleted");
 } catch (error) {
-    console.log("user image does not exist or could not be deleted");
+    logger.log("error","user image does not exist or could not be deleted");
     throw error; 
 }
       

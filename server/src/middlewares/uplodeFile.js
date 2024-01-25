@@ -56,7 +56,8 @@ const userStorage = multer.diskStorage({
     }
     cb(null,true);
   };
-  const uploadUserImage = multer({ storage: userStorage,
+  const uploadUserImage = multer({ 
+    storage: userStorage,
     limits:{fileSize:MAX_FILE_SIZE},
     fileFilter,
 })

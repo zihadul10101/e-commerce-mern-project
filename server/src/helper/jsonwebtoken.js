@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const logger = require('../controllers/logger/logerController');
 
 const createJSONWebToken = (payload, secretKey, expireIn) => {
 
@@ -16,7 +17,7 @@ const createJSONWebToken = (payload, secretKey, expireIn) => {
           return token; 
     } catch (error) {
      
-        console.error('Failed to sign in the JWT:', error);
+        logger.error("error",'Failed to sign in the JWT:', error);
         throw error;  
      
     }

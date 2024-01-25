@@ -6,7 +6,8 @@ const { deleteImage } = require('../helper/deleteImageHelper');
 const mongoose=require('mongoose');
 const { emailWithNodeMailer } = require('../helper/email');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
-const { jwtForgetPasswordKey } = require('../secret');
+const { jwtForgetPasswordKey, clientURL } = require('../secret');
+const sendEmail = require('../helper/sendEmail');
 
 
 // handle get user
@@ -107,12 +108,12 @@ const { jwtForgetPasswordKey } = require('../secret');
         //    updates.address=req.body.address;
         //  }
         const allowedFields=['name','password','phone','address'];
-       for(let key in req.body){
+       for(const key in req.body){
         if(allowedFields.includes(key)){
           updates[key]=req.body[key];
         }
         else if(key == 'email'){
-          throw new Error("Email can't be updated.");
+          throw createError(400,"Email can't be updated.");
         }
        }
          const image=req.file?.path;
@@ -255,19 +256,13 @@ const userForgetPasswordByEmail = async (email)=>{
       subject: "Reset password Email",
       html: `
         <h2>Hello ${user.name} !</h2>
-        <p>Please click here to <a href="http://localhost:3000/api/users/forget-password/${token}"
+        <p>Please click here to <a href="${clientURL}/api/users/forget-password/${token}"
          target="_blank">
           your forget password account</a></p>
       `
     };
     // send email with nodemailer
-    try {
-       await emailWithNodeMailer(emailData);
-  
-    } catch (emailError) {
-      next(createError(500,"Failed to send forget password verifation email"));
-      return;
-    }
+  sendEmail(emailData);
   
     return token;
    
