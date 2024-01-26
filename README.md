@@ -108,7 +108,7 @@ chang packaje.jeson
  ## Create refresh-token GET /api/auth/refresh-token
  ## Create protected route GET /api/auth/protected
  ## npm i winston
- ## Category CRUD :
+ ## Category CRUD Api :
  ## POST /api/categories -> create categories
   1. create category, modeal, route ,controller  and use npm i slugify
  ## GET /api/categories -> read categories
@@ -116,8 +116,14 @@ chang packaje.jeson
   2.  GET /api/categories/:slug
  ## PUT /api/categories /:slug-> Updated categories
  ## DELETE /api/categories /:slug-> DELETE categories
-  
-<!-- https://cloud.mongodb.com/v2/605a21d6c01d53693cfafce4#/metrics/replicaSet/65864dfecaa0f12c16d6de98/explorer/ecommerceMernDB/users/find -->
+  ## Product CRUD Api:
+  1. product api model
+  2. create seed route for testing products
+  ## POST /api/products -> create products
+  ## GET /api/products -> read products
+  ## PUT /api/products -> updated products
+  ## DELETE /api/products -> delete products
+
 
 
 
