@@ -28,7 +28,7 @@ try {
    }
    //token set,cookie
    const tokenPayload={user};
-   const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '5m');
+   const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '15m');
    setAccessTokenCookie(res,accessToken);
 
    //refresh token set,cookie

@@ -9,6 +9,7 @@ const { userRouter } = require('./routers/userRouter');
 const { seedRouter } = require('./routers/seedRouter');
 const { errorResponse } = require('./controllers/responseController');
 const { authRouter } = require('./routers/authRouther');
+const { categoryRouter } = require('./routers/categoryRouter');
 
 
 const app = express()
@@ -28,11 +29,11 @@ app.use(rateLimiter);
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
-// app.use(express.json());
-// app.use(express.urlencoded({ extended:true}));
+
 app.use('/api/user',userRouter);
 app.use('/api/seed',seedRouter);
 app.use('/api/auth',authRouter);
+app.use('/api/categories',categoryRouter);
 
 const isLoggedIn=(req,res,next)=>{
   // console.log("Is loggedin middlewar");
