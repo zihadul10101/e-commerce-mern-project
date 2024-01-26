@@ -11,7 +11,7 @@ const categorySchema= new Schema({
   },
   slug:{
    type:  String,
-   require:[true,'slug is required'],
+   require:[true,'Category slug is required'],
    lowercase:true,
    unique:true,
   },
