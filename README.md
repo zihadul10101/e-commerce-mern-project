@@ -123,7 +123,8 @@ chang packaje.jeson
   ## GET /api/products -> read products
   ## PUT /api/products -> updated products
   ## DELETE /api/products -> delete products
-
+  ## product API - Search products
+  ## product API - filter products
 
 
 

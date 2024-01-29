@@ -37,11 +37,11 @@ const getProducts=async (search,limit,page) => {
     
     const searchRegExp = new RegExp(".*"+ search + ".*",'i');
     const filter = {
-      isAdmin:{$ne: true},
+   
       $or:[
         {name:{$regex:searchRegExp}},
-        {email:{$regex:searchRegExp}},
-        {phone:{$regex:searchRegExp}}
+      //  {email:{$regex:searchRegExp}},
+       
       ]
     }
     const products=await Product.find(filter)
@@ -59,6 +59,7 @@ const getProducts=async (search,limit,page) => {
       currentPage:page,
       previousPage:page-1>0? page-1:null,
       nextPage:page+1<Math.ceil(count/limit)? page+1:null,
+      totalNumberOfProduct:count
     }, 
  } ;  
  }
@@ -93,10 +94,10 @@ const updatedProducts=async (req) => {
        }
        updates.image = image;
        // before image replace at this time
-       if (product.image && product.image !== 'default.png') {
-        deleteImage(product.image);
-      }
-      // product.image != 'default.png' && deleteImage(product.image);
+      //  if (product.image && product.image !== 'default.png') {
+      //   deleteImage(product.image);
+      // }
+       product.image != 'default.png' && deleteProductImage(product.image);
       
      const updateOptions={new:true,runValidators:true,context:'query'};
     
