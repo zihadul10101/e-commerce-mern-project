@@ -23,7 +23,8 @@ const getCategory=async () => {
  }
 // get single category 
 const getSingleCategory=async (slug) => {
-    const category=await Category.find({slug}).select('name slug').lean();
+    const category=await Category.findOne({slug}).select('name slug').lean();
+    console.log(category);
     if(!category){
         throw createError(404,"Category Not Found");
      }

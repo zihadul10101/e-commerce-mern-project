@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const User = require("../models/userModels");
 const { deleteImage } = require('../helper/deleteImageHelper');
 const mongoose=require('mongoose');
-const { emailWithNodeMailer } = require('../helper/email');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtForgetPasswordKey, clientURL } = require('../secret');
 const sendEmail = require('../helper/sendEmail');

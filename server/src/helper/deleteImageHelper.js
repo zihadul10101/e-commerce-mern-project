@@ -13,4 +13,16 @@ try {
 }
       
 }
-module.exports={ deleteImage}
+const deleteProductImage = async(imagePath) =>{
+   
+try { 
+    await  fs.access(imagePath)
+    await  fs.unlink(imagePath)
+    logger.error("error","product image was deleted");
+} catch (error) {
+    logger.log("error","product image does not exist or could not be deleted");
+    throw error; 
+}
+      
+}
+module.exports={ deleteImage,deleteProductImage}

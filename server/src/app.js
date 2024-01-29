@@ -10,6 +10,7 @@ const { seedRouter } = require('./routers/seedRouter');
 const { errorResponse } = require('./controllers/responseController');
 const { authRouter } = require('./routers/authRouther');
 const { categoryRouter } = require('./routers/categoryRouter');
+const { productRouter } = require('./routers/productRouther');
 
 
 const app = express()
@@ -34,26 +35,8 @@ app.use('/api/user',userRouter);
 app.use('/api/seed',seedRouter);
 app.use('/api/auth',authRouter);
 app.use('/api/categories',categoryRouter);
+app.use('/api/products',productRouter);
 
-const isLoggedIn=(req,res,next)=>{
-  // console.log("Is loggedin middlewar");
-  const login= true;
-  if (login) {
-    req.body.id=101;
-    next();
-  } else {
-    return res.status(401).json({
-      message:"Please login first"
-    })
-  }
-  // next();
-}
-
-app.get('/test', (req, res) => {
-  res.status(200).send({
-    message:"get:Apping tsteing successfully"
-  })
-});
 
 // client error handling error
 app.use(( req, res, next) => {

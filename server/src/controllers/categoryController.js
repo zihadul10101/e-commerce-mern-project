@@ -39,11 +39,12 @@ const handleGetCategories=async (req, res,next) => {
 const handleGetSingleCategory=async (req, res,next) => {
   try {
     const slug= req.params.slug;
-  const getSingleCategories =  await getSingleCategory(slug);
+  const result =  await getSingleCategory(slug);
+
    return successResponse(res,{
      statusCode:200,
      message:"Single Category was get successfully",
-     payload:getSingleCategories
+     payload:result
    })
   } catch (error) {
     next(error); 
