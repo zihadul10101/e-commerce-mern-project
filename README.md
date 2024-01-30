@@ -125,6 +125,10 @@ chang packaje.jeson
   ## DELETE /api/products -> delete products
   ## product API - Search products
   ## product API - filter products
+  ## File upload by cloudinary 
+  1. npm i cloudinary
+  2. setup cloudinary neme , app key , secret key in env file 
+  3. create cloudinary file
 
 
 

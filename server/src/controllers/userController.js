@@ -2,10 +2,10 @@ const createError = require('http-errors');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
+const cloudinary = require('../config/cloudinary');
 const { successResponse } = require('./responseController');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
-const { jwtActivationKey, clientURL } = require('../secret');
-const { emailWithNodeMailer } = require('../helper/email');
+const { jwtActivationKey, clientURL,secret_url } = require('../secret');
 const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById, updatedPasswordById, 
   userForgetPasswordByEmail, 
   resetPassword} = require('../services/userServices');
@@ -78,8 +78,8 @@ const handleProcessRegister=async (req, res,next) => {
     // if (!image) {
     //   throw new Error("Image File is Required");
     // }
-    if (image && image.size>1024*1024*2) {
-      throw new Error("File too large.It must be lees then 2 MB.");
+    if (image && image.size>1024*1024*5) {
+      throw new Error("File too large.It must be lees then 5 MB.");
     }
 
     //const imageBufferString = req.file.buffer.toString('base64');
@@ -133,6 +133,15 @@ const handleActivateUserAccount=async (req, res,next) => {
   if(userExists){
    throw createError(409,"User with this email already exists , please sign in");
   }
+  //File upload by cloudinary 
+     const image=decoded?.image;
+     if(image){
+      const response = await cloudinary.uploader.upload(image, {
+        folder: "ecommerceMern/users",
+      });
+      
+      decoded.image = response?.secure_url;
+     }
       await User.create(decoded);
       return successResponse(res,{
       statusCode:201,
