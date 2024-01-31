@@ -5,12 +5,13 @@ const User = require('../models/userModels');
 const cloudinary = require('../config/cloudinary');
 const { successResponse } = require('./responseController');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
-const { jwtActivationKey, clientURL,secret_url } = require('../secret');
+const { jwtActivationKey, clientURL } = require('../secret');
 const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserById, updatedPasswordById, 
   userForgetPasswordByEmail, 
   resetPassword} = require('../services/userServices');
 const checkUserExists = require('../helper/checkUserExist');
 const sendEmail = require('../helper/sendEmail');
+const { publicIdWithoutExtensionFromUrl } = require('../helper/cloudinaryHelper');
 
 
 // get all users

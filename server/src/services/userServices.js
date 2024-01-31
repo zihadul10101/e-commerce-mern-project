@@ -1,12 +1,14 @@
 const createError = require('http-errors');
 const bcrypt =require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cloudinary = require('../config/cloudinary');
 const User = require("../models/userModels");
 const { deleteImage } = require('../helper/deleteImageHelper');
 const mongoose=require('mongoose');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
-const { jwtForgetPasswordKey, clientURL } = require('../secret');
+const { jwtForgetPasswordKey, clientURL, cloudinaryAppKey } = require('../secret');
 const sendEmail = require('../helper/sendEmail');
+const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary } = require('../helper/cloudinaryHelper');
 
 
 // handle get user
@@ -72,12 +74,16 @@ const sendEmail = require('../helper/sendEmail');
  const deleteUserById = async (id,options={})=>{
  
     try {
-    //  const userImagePath= user.image;
-    //  deleteImage(userImagePath);
-  const user=  await User.findByIdAndDelete({_id:id,isAdmin:false});
-    if(user && user.image){
-      await deleteImage(user.image); 
-    }   
+      const userExists= await User.findOne({_id:id});
+      if(userExists && userExists.image){
+        const publicId = await publicIdWithoutExtensionFromUrl(userExists.image);
+        deletFileFromCloudinary("ecommerceMern/users",publicId,"User");
+      }
+     await User.findByIdAndDelete({_id:id,isAdmin:false});
+  // const user=  await User.findByIdAndDelete({_id:id,isAdmin:false});
+    // if(user && user.image){
+    //   await deleteImage(user.image); 
+    // }   
      
     } catch (error) {
         if(error instanceof mongoose.Error.CastError){

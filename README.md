@@ -129,6 +129,7 @@ chang packaje.jeson
   1. npm i cloudinary
   2. setup cloudinary neme , app key , secret key in env file 
   3. create cloudinary file
+  ## File delete by cloudinary
 
 
 

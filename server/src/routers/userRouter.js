@@ -22,7 +22,7 @@ userRouter.post('/process-register',uploadUserImage.single("image"),isLoggedOut,
 userRouter.post('/activate',isLoggedOut,handleActivateUserAccount);
 userRouter.get('/',isLoggedIn,isAdmin,handleGetUsers);
 userRouter.get('/:id([0-9a-fA-F]{24})',isLoggedIn,handleGetUserById );
-userRouter.delete('/:id([0-9a-fA-F]{24})',isLoggedIn,handleDeletUserById );
+userRouter.delete('/:id([0-9a-fA-F]{24})',isLoggedIn,isAdmin,handleDeletUserById );
 userRouter.put('/reset-password',validateUserResetPassword,runValidation,handleResetPassword);
 userRouter.put('/:id([0-9a-fA-F]{24})',uploadUserImage.single("image"),isLoggedIn,handleUpdateUserById);
 userRouter.put('/manage-user/:id([0-9a-fA-F]{24})',isLoggedIn,isAdmin,handleManageUserById);

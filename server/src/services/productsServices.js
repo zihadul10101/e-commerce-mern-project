@@ -1,15 +1,16 @@
 const createError = require('http-errors');
 const slugify = require('slugify')
-const Category = require('../models/categoryModels');
+const cloudinary = require('../config/cloudinary');
 const Product = require('../models/productModels');
-const { deleteImage, deleteProductImage } = require('../helper/deleteImageHelper');
+const { deleteProductImage } = require('../helper/deleteImageHelper');
+const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary } = require('../helper/cloudinaryHelper');
 
 
 // create product
 const createProducts=async (req) => {
     // name , slug , description , price , quantity , sold , shipping ,image
     const { name ,description,price,quantity , sold , shipping,category} = req.body;
-    const image=req.file?.path;
+    let image=req.file?.path;
     if (image && image.size>1024*1024*4) {
         throw new Error("File too large.It must be lees then 4 MB.");
       }
@@ -18,6 +19,12 @@ if(productExists){
  throw createError(409,"Product with this name already exists .");
 } 
 
+if(image){
+ const response = await cloudinary.uploader.upload(image, {
+   folder: "ecommerceMern/products",
+ });
+image = response?.secure_url;
+}
 const newProduct = await Product.create({
      name: name,
      slug: slugify(name) ,
@@ -30,8 +37,8 @@ const newProduct = await Product.create({
      category:category
     });
  return newProduct;  
+  }
  
- }
 // get all product
 const getProducts=async (search,limit,page) => {
     
@@ -114,14 +121,22 @@ const updatedProducts=async (req) => {
  }
 // delete product 
 const deleteProducts=async(slug) => {  
-     const result=  await Product.findOneAndDelete({slug:slug});
-     if(result && result.image){
-      await deleteProductImage(result.image); 
-    }  
-     if(!result){
-        throw createError(404,"No product found with this slug");
-     }
-    return result;  
+  const productExists= await Product.findOne({slug:slug});
+ 
+  if(productExists && productExists.image){
+    const publicId = await publicIdWithoutExtensionFromUrl(productExists.image);
+    deletFileFromCloudinary("ecommerceMern/products",publicId,"Product");
+
+  }
+    await Product.findOneAndDelete({slug:slug});
+    //  const result=  await Product.findOneAndDelete({slug:slug});
+    //  if(result && result.image){
+    //   await deleteProductImage(result.image); 
+    // }  
+  //    if(!isProduct){
+  //       throw createError(404,"No product found with this slug");
+  //    }
+  // return isProduct;
  }
 
 module.exports={createProducts,getProducts,getSingleProduct,updatedProducts,deleteProducts};
