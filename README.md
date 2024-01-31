@@ -130,6 +130,7 @@ chang packaje.jeson
   2. setup cloudinary neme , app key , secret key in env file 
   3. create cloudinary file
   ## File delete by cloudinary
+  ## File updated by cloudinary
 
 
 

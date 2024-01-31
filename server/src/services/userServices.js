@@ -8,7 +8,7 @@ const mongoose=require('mongoose');
 const { createJSONWebToken } = require('../helper/jsonwebtoken');
 const { jwtForgetPasswordKey, clientURL, cloudinaryAppKey } = require('../secret');
 const sendEmail = require('../helper/sendEmail');
-const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary } = require('../helper/cloudinaryHelper');
+const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary, updateCloudinaryFile } = require('../helper/cloudinaryHelper');
 
 
 // handle get user
@@ -131,11 +131,20 @@ const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary } = require('..
           if (image.size>1024*1024*2) {
             throw new Error("File too large.It must be lees then 2 MB");
           }
-          updates.image = image;
+       
+        //  updates.image = image;
           // before image replace at this time
-          user.image != 'default.png' && deleteImage(user.image);
+        //  user.image != 'default.png' && deleteImage(user.image);
          }
-     
+         if(image){
+          const response = await cloudinary.uploader.upload(image, {
+            folder: "ecommerceMern/users",
+          });
+          updates.image = response?.secure_url;
+          const publicId = await publicIdWithoutExtensionFromUrl(user.image);
+       
+          deletFileFromCloudinary("ecommerceMern/users",publicId,"User");
+         } 
       const updatedUser=await User.findByIdAndUpdate(userId,updates,updateOptions).select("-password");
       
       if(!updatedUser){

@@ -3,7 +3,7 @@ const slugify = require('slugify')
 const cloudinary = require('../config/cloudinary');
 const Product = require('../models/productModels');
 const { deleteProductImage } = require('../helper/deleteImageHelper');
-const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary } = require('../helper/cloudinaryHelper');
+const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary, updateCloudinaryFile } = require('../helper/cloudinaryHelper');
 
 
 // create product
@@ -94,18 +94,21 @@ const updatedProducts=async (req) => {
       }
      
      }
-     const image=req.file?.path;
+     let image=req.file?.path;
   
      if (image && image.size>1024*1024*4) {
          throw new Error("File too large.It must be lees then 4 MB.");
        }
-       updates.image = image;
-       // before image replace at this time
-      //  if (product.image && product.image !== 'default.png') {
-      //   deleteImage(product.image);
-      // }
-       product.image != 'default.png' && deleteProductImage(product.image);
-      
+
+       if(image){
+        const response = await cloudinary.uploader.upload(image, {
+          folder: "ecommerceMern/products",
+        });
+        updates.image = response?.secure_url;
+        const publicId = await publicIdWithoutExtensionFromUrl(product.image);
+     
+        deletFileFromCloudinary("ecommerceMern/products",publicId,"Product");
+       }    
      const updateOptions={new:true,runValidators:true,context:'query'};
     
     const updatedProducts= await Product.findOneAndUpdate(

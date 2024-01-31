@@ -18,5 +18,18 @@ try {
     throw error;
 }
 }
+const updateCloudinaryFile = async(imagePath, existingPublicId)=>{
+    try {
+        // Use the uploader to update the file
+        const result = await cloudinary.uploader.upload(imagePath, { public_id: existingPublicId });
+    
+        console.log('File updated successfully in Cloudinary:', result);
+        return result.secure_url; // Return the secure URL of the updated image
+      } catch (error) {
+        console.error('Error updating file in Cloudinary:', error.message);
+        throw error;
+      }
+}
 
-module.exports={publicIdWithoutExtensionFromUrl,deletFileFromCloudinary};
+
+module.exports={publicIdWithoutExtensionFromUrl,deletFileFromCloudinary,updateCloudinaryFile};

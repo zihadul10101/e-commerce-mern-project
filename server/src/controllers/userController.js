@@ -1,5 +1,4 @@
 const createError = require('http-errors');
-const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModels');
 const cloudinary = require('../config/cloudinary');
@@ -11,7 +10,7 @@ const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserByI
   resetPassword} = require('../services/userServices');
 const checkUserExists = require('../helper/checkUserExist');
 const sendEmail = require('../helper/sendEmail');
-const { publicIdWithoutExtensionFromUrl } = require('../helper/cloudinaryHelper');
+
 
 
 // get all users
