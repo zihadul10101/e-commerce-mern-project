@@ -27,4 +27,28 @@ try {
     throw error;
 };
 } 
-module.exports={emailWithNodeMailer}
+// Function to generate a random number within a range
+const generateRandomNumber = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+// Function to send OTP email using nodemailer
+const sendOtpEmail = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: smtpUsername,
+      pass:smtpPassword,
+    },
+  });
+
+  const mailOptions = {
+    from:smtpUsername,
+    to: email,
+    subject: 'Login OTP',
+    text: `Your login OTP is: ${otp}`,
+  };
+
+  await transporter.sendMail(mailOptions);
+};
+
+module.exports={emailWithNodeMailer,generateRandomNumber,sendOtpEmail}

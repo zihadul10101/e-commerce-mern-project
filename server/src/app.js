@@ -1,6 +1,8 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require("swagger-ui-express");
 const createError = require('http-errors');
 const morgan = require('morgan');
 const xssClean = require('xss-clean');
@@ -11,6 +13,8 @@ const { errorResponse } = require('./controllers/responseController');
 const { authRouter } = require('./routers/authRouther');
 const { categoryRouter } = require('./routers/categoryRouter');
 const { productRouter } = require('./routers/productRouther');
+const swaggerOptions = require('./swagger/options');
+
 
 
 const app = express()
@@ -30,6 +34,9 @@ app.use(rateLimiter);
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use('/api/user',userRouter);
 app.use('/api/seed',seedRouter);

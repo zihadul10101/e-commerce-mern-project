@@ -1,4 +1,5 @@
 const {body}= require('express-validator');
+const { check } = require("express-validator");
 // registration validator
 const validateUserRegistration =[
     body('name')
@@ -122,4 +123,11 @@ const validateUserResetPassword =[
    
 ]
 
-module.exports={validateUserRegistration,validateUserLogin,validateUserPassword,validateUserResetPassword,validateUserForgetPassword}
+// otp validator
+const validateOtpVerification = [
+    check("email").isEmail().withMessage("Invalid email"),
+    check("otp").isNumeric().isLength({ min: 6, max: 6 }).withMessage("Invalid OTP format"),
+  ];
+  
+
+module.exports={validateOtpVerification,validateUserRegistration,validateUserLogin,validateUserPassword,validateUserResetPassword,validateUserForgetPassword}

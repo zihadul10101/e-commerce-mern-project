@@ -131,6 +131,44 @@ chang packaje.jeson
   3. create cloudinary file
   ## File delete by cloudinary
   ## File updated by cloudinary
+  ## Implement swagger doc
+   1. npm i swagger-jsdoc and swagger-ui-express
+  2. setup app.js in
+   const swaggerJSDoc = require('swagger-jsdoc');
+   const swaggerUi = require("swagger-ui-express");
+   const swaggerSpec = swaggerJSDoc(swaggerOptions);
+   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+   
+
+  3. create swgger folder and create swaggerOptions.js
+   const swaggerOptions = {
+    swaggerDefinition: {
+      openapi: "3.0.0",
+      info: {
+        title: "Ecommerce Mern",
+        version: "1.0.0",
+        description: "Create routes for handling user authentication, product listing, product details,Your API description",
+        contact: {
+          name: "Zihadul Islam",
+          email: "zihadul10101@gmail.com",
+        },
+      },
+      servers: [
+        {
+          url: "http://localhost:3002/api/user", // Update with your API base URL
+          description: "Local Development Server",
+        },
+        
+      ],
+     
+    },
+ //  apis: ["./routers/userRouter.js"],
+ apis: ['./src/routers/userRouter*.js']
+  
+  };
+ module.exports=swaggerOptions;
+
+  4. Make components in router floder
 
 
 
