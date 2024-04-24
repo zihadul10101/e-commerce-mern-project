@@ -11,7 +11,7 @@ const sendEmail = require('../helper/sendEmail');
 const { publicIdWithoutExtensionFromUrl, deletFileFromCloudinary, updateCloudinaryFile } = require('../helper/cloudinaryHelper');
 
 
-// handle get user
+// handle get all user
  const findUsers = async (search,limit,page)=>{
  
     try {

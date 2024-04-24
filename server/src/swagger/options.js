@@ -4,7 +4,8 @@ const swaggerOptions = {
       info: {
         title: "Ecommerce Mern",
         version: "1.0.0",
-        description: "Create routes for handling user authentication, product listing, product details,Your API description",
+        description: "Responsive Design:Ensure your website is responsive and works well on various devices, including desktops, tablets, and smartphones. This improves the user experience and accessibility."
+        ,
         contact: {
           name: "Zihadul Islam",
           email: "zihadul10101@gmail.com",
@@ -12,7 +13,7 @@ const swaggerOptions = {
       },
       servers: [
         {
-          url: "http://localhost:3002/api/user", // Update with your API base URL
+          url: "http://localhost:3002", // Update with your API base URL
           description: "Local Development Server",
         },
         
