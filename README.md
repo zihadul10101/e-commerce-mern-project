@@ -1,3 +1,24 @@
+## The goal of this project is to create a backend system for an e-commerce platform that
+provides the following features:
+
+● User Authentication and Authorization: The project uses JWT-based authentication,
+along with security measures like rate limiting and XSS protection. It includes login,
+logout, password reset, and user verification functionalities.
+● User Management: CRUD (Create, Read, Update, Delete) operations for user
+management, including admin-specific endpoints for user bans and other administrative
+tasks.
+● Product Management: CRUD operations for product handling, allowing administrators to
+create, read, update, and delete product listings. This also involves image uploading via
+Cloudinary.
+● Category Management: Similar to product management, but for categorizing products.
+● Data Storage and Security: With MongoDB as the backend database, the project includes
+proper handling of sensitive data with bcrypt and JWT. It uses environment variables to
+protect sensitive information.
+● API Documentation: The project integrates Swagger for detailed API documentation,
+enabling developers to understand and test the available endpoints easily.
+● Modular Architecture and Middleware: The project uses an MVC (Model-View-Controller)
+architecture, making it easier to manage and scale. Middleware is used extensively for
+parsing data, handling errors, and implementing security.
 #ECOMERE PROJECT MERAN 
 ## Enverment setup
 1. node install, 
