@@ -13,6 +13,7 @@ const Navbar = () => {
         method: 'POST',
       });
       Cookies.remove('access_token');
+      localStorage.removeItem("userId");
       navigate('/'); 
       window.location.reload(); 
     } catch (error) {

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 const ActivateAccount = () => {
   const { token } = useParams(); 
   const [status, setStatus] = useState('Processing...'); 
-
+console.log("Token",status);
   useEffect(() => {
     if (!token) {
       toast.error('Invalid activation token.');
@@ -17,7 +17,8 @@ const ActivateAccount = () => {
     axios
       .post('http://localhost:3002/api/user/activate', { token })
       .then((response) => {
-        if (response.status === 200) {
+        console.log("Response",response.status);
+        if (response.status === 201) {
           toast.success('Account activated successfully!');
           setStatus('Account activated successfully!');
         }

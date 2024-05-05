@@ -8,13 +8,8 @@ const UserProfile = () => {
 
   // State variables
   const [userData, setUserData] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true); 
-  const [updateData, setUpdateData] = useState({
-    name: '',
-    address: '',
-    phone: '',
-  });
+
 
   // Fetch user data
   useEffect(() => {
@@ -25,12 +20,8 @@ const UserProfile = () => {
             withCredentials: true,
           });
           const user = response?.data?.payload?.user;
+          console.log("USERdata",user);
           setUserData(user);
-          setUpdateData({
-            name: user?.name,
-            address: user?.address,
-            phone: user?.phone,
-          });
           setIsLoading(false);
         } catch (error) {
           console.error('Error fetching user data:', error);
@@ -42,24 +33,7 @@ const UserProfile = () => {
     }
   }, [userId]);
 
-  // Handle update form submission
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(`http://localhost:3002/api/user/${userId}`, updateData, {
-        withCredentials: true,
-      });
-      console.log("Data",response);
-      if (response?.status === 200) {
-        setUserData(response?.data?.payload?.user); // Update the user data
-        setIsModalOpen(false); // Close the modal
-        setIsLoading(false); // Ensure loading state is reset
-      }
-    } catch (error) {
-      console.error('Error updating user:', error);
-      setIsLoading(false); // Reset loading state on error
-    }
-  };
+
 
   return (
     <div className="px-2 py-4 mt-16 flex flex-col justify-center items-center text-center">
@@ -80,12 +54,14 @@ const UserProfile = () => {
 
           {/* Buttons */}
           <div className="mt-4">
+          <NavLink to="/updated-user-info">
             <button
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => setIsModalOpen(true)}
+             
             >
               Update User Info
             </button>
+            </NavLink>
           <NavLink to="/updated-password">
           <button
               className="bg-blue-500 ml-5 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -95,65 +71,7 @@ const UserProfile = () => {
             </button>
           </NavLink>
 
-            {/* Modal for updating user info */}
-            {isModalOpen && (
-              <div className="fixed inset-0 z-50 flex justify-center items-center bg-gray-900 bg-opacity-75">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                  <h3 className="text-lg font-bold">Update User Information</h3>
-                  <form onSubmit={handleUpdate}>
-                    {/* Name Input */}
-                    <div className="mt-4">
-                      <label className="block text-sm font-bold text-gray-700">Name:</label>
-                      <input
-                        type="text"
-                        value={updateData.name}
-                        onChange={(e) => setUpdateData({ ...updateData, name: e.target.value })}
-                        className="border rounded px-2 py-1"
-                      />
-                    </div>
-
-                    {/* Address Input */}
-                    <div className="mt-4">
-                      <label className="block text-sm font-bold text-gray-700">Address:</label>
-                      <input
-                        type="text"
-                        value={updateData.address}
-                        onChange={(e) => setUpdateData({ ...updateData, address: e.target.value })}
-                        className="border rounded px-2 py-1"
-                      />
-                    </div>
-
-                    {/* Phone Input */}
-                    <div className="mt-4">
-                      <label className="block text-sm font-bold text-gray-700">Phone:</label>
-                      <input
-                        type="text"
-                        value={updateData.phone}
-                        onChange={(e) => setUpdateData({ ...updateData, phone: e.target.value })}
-                        className="border rounded px-2 py-1"
-                      />
-                    </div>
-
-                    {/* Submit and Cancel Buttons */}
-                    <div className="mt-4 flex justify-between">
-                      <button
-                        type="submit"
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                      >
-                        Update
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsModalOpen(false)} // Close the modal
-                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
+     
           </div>
         </>
       )}
