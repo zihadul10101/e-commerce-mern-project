@@ -1,0 +1,9 @@
+.fixed-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px; /* Or whatever width is required */
+    z-index: 100; /* Adjust based on your needs */
+  }
+  
