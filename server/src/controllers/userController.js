@@ -10,6 +10,7 @@ const { handleUserAction, findUsers, findUserById, deleteUserById, updateUserByI
   resetPassword} = require('../services/userServices');
 const checkUserExists = require('../helper/checkUserExist');
 const sendEmail = require('../helper/sendEmail');
+const createHttpError = require('http-errors');
 
 
 
@@ -91,12 +92,15 @@ if(image){
 }
  const token = createJSONWebToken(tokenPayload, jwtActivationKey, '15m');
 // prepare email
+const baseUrl = "http://localhost:5173"; // Base URL for your frontend
+const activationPath = `/users/activate/${token}`; // Activation path with token
+
 const emailData = {
   email,
   subject: "Account Activation Email",
   html: `
-    <h2>Hello ${name} !</h2>
-    <p>Please click here to <a href="${clientURL}/api/users/activate/${token}" target="_blank">
+    <h2>Hello ${name}!</h2>
+    <p>Please click here to <a href="${baseUrl + activationPath}" target="_blank">
     activate your account</a></p>
   `
 };
@@ -117,58 +121,59 @@ if(userExists){
    
   }
   // single user activateUserAccount
-const handleActivateUserAccount=async (req, res,next) => {
-   try { 
-  const token=req.body.token;
-  if(!token){
-    throw createError(404,"Token not found");
-  }
- try {
-  const decoded=jwt.verify(token,jwtActivationKey);
-   if(!decoded){
-    throw createError(401,"User was not able to verifited");
-  }
-
-  const userExists= await User.exists({email:decoded.email});
-  if(userExists){
-   throw createError(409,"User with this email already exists , please sign in");
-  }
-  //File upload by cloudinary 
-     const image=decoded?.image;
-     if(image){
-      const response = await cloudinary.uploader.upload(image, {
-        folder: "ecommerceMern/users",
-      });
-      
-      decoded.image = response?.secure_url;
-     }
+  const handleActivateUserAccount = async (req, res, next) => {
+    try {
+      const token = req.body.token;
+      if (!token) {
+        throw createError(404, "Token not found");
+      }
+  
+      // Attempt to verify and decode the token
+      const decoded = jwt.verify(token, jwtActivationKey);
+      if (!decoded) {
+        throw createError(401, "Invalid or expired token");
+      }
+  
+      // Check for existing user with the same email
+      const userExists = await User.exists({ email: decoded.email.toLowerCase() });
+      if (userExists) {
+        throw createError(409, "A user with this email already exists. Please sign in or request a new activation link.");
+      }
+  
+      // File upload to Cloudinary (if applicable)
+      const image = decoded?.image;
+      if (image) {
+        const response = await cloudinary.uploader.upload(image, { folder: "ecommerceMern/users" });
+        decoded.image = response?.secure_url;
+      }
+  
+      // Create the user
       await User.create(decoded);
-      return successResponse(res,{
-      statusCode:201,
-      message:"User was registered successfully", 
-    })
- } catch (error) {
-  if(error.name== 'TokenExpiredError'){
-    throw createError(401,"Token has expired");
-  }else if(error.name== 'JsonWebTokenError'){
-    throw createError(401,"Invalid Token");
-  }else{
-    throw error;
-  }
- }
-
-   
-   } catch (error) {
-     next(error); 
-   }
-   
-  }
+  
+      // Respond with success message
+      return successResponse(res, {
+        statusCode: 201,
+        message: "User was registered successfully",
+      });
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw createError(401, "Token has expired");
+      } else if (error.name === 'JsonWebTokenError') {
+        throw createHttpError(401, "Invalid Token");
+      } else if (error.name === 'MongoServerError' && error.code === 11000) {
+        // Handle MongoDB duplicate key errors
+        throw createError(409, "Duplicate key error. A user with this email may already exist.");
+      } else {
+        throw error;
+      }
+    }
+  };
+  
     // single user updated
 const handleUpdateUserById=async (req, res,next) => {
   try {
      const userId= req.params.id;
      const updatedUser = await updateUserById(userId,req);
-    
      return successResponse(res,{
      statusCode:200,
      message:"User was updated successfully",  
@@ -200,7 +205,6 @@ const handleManageUserById=async (req, res,next) => {
     //  user password updated
 const handleUpdatedPassword=async (req, res,next) => {
   try {
-    
     const userId= req.params.id;
    
      const updatedUser = await updatedPasswordById(userId,req);
@@ -235,7 +239,6 @@ const handleResetPassword=async (req, res,next) => {
     //  user forget password 
 const handleForgetPassword=async (req, res,next) => {
   try {
-     
     const {email} = req.body;
    const token= await userForgetPasswordByEmail(email);
     return successResponse(res,{

@@ -7,6 +7,7 @@ const bcrypt =require('bcryptjs');
 const { jwtAcccessKey, jwtRefreshKey } = require('../secret');
 const { setAccessTokenCookie, setRefreshTokenCookie } = require('../helper/cookie');
 const { generateRandomNumber, sendOtpEmail } = require('../helper/email');
+
 const handleLogin=async (req, res,next) => {
   try {
     
@@ -28,12 +29,16 @@ const handleLogin=async (req, res,next) => {
      }
      //token set,cookie
      const tokenPayload={user};
-     const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '15m');
-     setAccessTokenCookie(res,accessToken);
+     const accessToken = createJSONWebToken(tokenPayload, jwtAcccessKey, '20m');
+     //console.log(accessToken);
+     //setAccessTokenCookie(res,accessToken);
   
      //refresh token set,cookie
      const refreshToken = createJSONWebToken(tokenPayload, jwtRefreshKey, '7d');
-     setRefreshTokenCookie(res,refreshToken);
+     //setRefreshTokenCookie(res,refreshToken);
+
+       res.cookie('access_token', accessToken, { httpOnly: false });
+        res.cookie('refresh_token', refreshToken, { httpOnly: false });
   
      const userWithoutPassword= user.toObject();
      delete userWithoutPassword.password;
@@ -133,19 +138,19 @@ const handleLogin=async (req, res,next) => {
 // }
 
 const handleLogout=async (req, res,next) => {
-try {
-   res.clearCookie('accessToken');
-   res.clearCookie('refreshToken');
-   // success Response 
-   return successResponse(res,{
-    statusCode:200,
-    message:"User logged out successfully",
-    payload:{  }
-  })
-} catch (error) {
-    next(error);
-}
-}
+  try {
+     res.clearCookie('access_token');
+     res.clearCookie('refresh_token');
+     // success Response 
+     return successResponse(res,{
+      statusCode:200,
+      message:"User logged out successfully",
+      payload:{  }
+    })
+  } catch (error) {
+      next(error);
+  }
+  }
 const handleRefreshToken=async (req, res,next) => {
 try {
   const oldRefreshToken = req.cookies.refreshToken;

@@ -1,8 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerUi = require("swagger-ui-express");
+const cors = require('cors');
 const createError = require('http-errors');
 const morgan = require('morgan');
 const xssClean = require('xss-clean');
@@ -21,12 +20,18 @@ const app = express()
 
 const rateLimiter = rateLimit({
 	windowMs: 50 * 60 * 1000, // 15 minutes
-	max: 50, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
 	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     message:"to many request from this ip.Please try again later"
 })
 
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true // Allow cookies to be sent and received
+};
+
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
 app.use(xssClean());
@@ -35,8 +40,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:true}));
 
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 app.use('/api/user',userRouter);
 app.use('/api/seed',seedRouter);

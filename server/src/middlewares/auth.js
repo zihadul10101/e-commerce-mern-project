@@ -4,7 +4,7 @@ const { jwtAcccessKey } = require('../secret');
 
 const  isLoggedIn=async(req,res,next)=>{
    try {
-    const accessToken=req.cookies.accessToken;
+    const accessToken=req.cookies.access_token;
     //console.log(accessToken);
     if(!accessToken){
         throw createError(401,"Access Token Not Found.Please Log in.");
@@ -23,7 +23,7 @@ const  isLoggedIn=async(req,res,next)=>{
 
 const  isLoggedOut=async(req,res,next)=>{
    try {
-    const accessToken=req.cookies.accessToken;
+    const accessToken=req.cookies.access_token;
     //console.log(accessToken);
     if(accessToken){
       try {
