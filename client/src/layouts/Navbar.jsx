@@ -1,26 +1,32 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const token = Cookies.get('access_token'); 
+  const token = Cookies.get('access_token');
   //console.log("data",token);
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:3002/api/auth/logout', {
-        method: 'POST',
-      });
-      Cookies.remove('access_token');
-      localStorage.removeItem("userId");
-      navigate('/'); 
-      window.location.reload(); 
+   
+      const response = await axios.post(
+        'http://localhost:3002/api/auth/logout',
+        {}, 
+        {
+          withCredentials: true, 
+        }
+      );
+    navigate("/login");
+      console.log('Logout successful:', response); 
+
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error('Error during logout:', error); 
     }
   };
-
+  
+  
   return (
     <header className="flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide relative z-50">
       <div className="flex flex-wrap items-center justify-between gap-5 w-full">
