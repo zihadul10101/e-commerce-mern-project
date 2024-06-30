@@ -160,10 +160,12 @@ if(userExists){
         throw createError(401, "Token has expired");
       } else if (error.name === 'JsonWebTokenError') {
         throw createHttpError(401, "Invalid Token");
-      } else if (error.name === 'MongoServerError' && error.code === 11000) {
-        // Handle MongoDB duplicate key errors
-        throw createError(409, "Duplicate key error. A user with this email may already exist.");
-      } else {
+      } 
+      // else if (error.name === 'MongoServerError' && error.code === 11000) {
+      //   // Handle MongoDB duplicate key errors
+      //   throw createError(409, "Duplicate key error. A user with this email may already exist.");
+      // }
+       else {
         throw error;
       }
     }
@@ -222,7 +224,6 @@ const handleUpdatedPassword=async (req, res,next) => {
     //  user reset password
 const handleResetPassword=async (req, res,next) => {
   try {
-    
      const userId= req.params.id;
      const updatedUser = await resetPassword(userId,req);
     
